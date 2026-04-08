@@ -19568,5 +19568,17 @@
     "market": "XRP 15m",
     "phase": "MID",
     "ts": "2026-04-08T20:08:33.511Z"
+  },
+  {
+    "engine": "XRP",
+    "coin": "XRP",
+    "side": "DOWN",
+    "entryPrice": 0.14,
+    "exitPrice": 0.08,
+    "pnl": -3,
+    "newBalance": -54,
+    "market": "XRP 15m",
+    "phase": "MID",
+    "ts": "2026-04-08T20:09:03.105Z"
   }
 ]
