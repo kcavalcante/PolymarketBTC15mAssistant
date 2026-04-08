@@ -32,7 +32,7 @@ import { runWeatherConsensusSweep, weatherState, weatherEngineState, executeWeat
 import { COINS } from "./coins.js";
 import { createCoinEngine } from "./engines/coinEngine.js";
 import { fetchPolymarketSnapshotForCoin } from "./data/coinMarketResolver.js";
-import { loadPortfolio, loadEngineState, recordClosedTrade, appendTradeLog } from "./data/persistence.js";
+import { loadPortfolio, loadEngineState, recordClosedTrade, appendTradeLog, recordDailyBalance } from "./data/persistence.js";
 
 const app = express();
 app.use(express.static('public'));
@@ -1142,6 +1142,12 @@ async function main() {
           regime: regimeInfo.regime
       });
 
+      // Registrar saldo total diário (Gestão de Banca)
+      const totalBalance = engineState.virtualBalance
+          + Object.values(altEngines).reduce((s, e) => s + (e.state.virtualBalance || 0), 0)
+          + (weatherEngineState.virtualBalance || 0);
+      recordDailyBalance(portfolio, totalBalance);
+
       const altCoinsPayload = {};
       for (const [key, eng] of Object.entries(altEngines)) {
           altCoinsPayload[key] = {
@@ -1194,7 +1200,8 @@ async function main() {
           stopLoss:  CONFIG.stopLoss,
           stake:     CONFIG.stakeAmount,
           dryRun:    CONFIG.dryRun
-        }
+        },
+        dailyHistory: portfolio.dailyHistory?.slice(-90) ?? []
       });
 
       prevSpotPrice = spotPrice ?? prevSpotPrice;

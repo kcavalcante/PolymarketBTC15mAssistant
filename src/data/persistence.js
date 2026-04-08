@@ -126,6 +126,34 @@ export function syncEngineBalance(portfolio, engineKey, balance) {
     savePortfolio(portfolio);
 }
 
+// ─── Gestão de Banca: histórico diário de saldo ──────────────────────────────
+
+/**
+ * Registra o saldo total do portfólio para o dia de hoje.
+ * - Primeira chamada do dia: cria entrada com startBalance = endBalance = total
+ * - Chamadas subsequentes: atualiza apenas endBalance
+ */
+export function recordDailyBalance(portfolio, totalBalance) {
+    if (!portfolio.dailyHistory) portfolio.dailyHistory = [];
+
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const last  = portfolio.dailyHistory[portfolio.dailyHistory.length - 1];
+
+    if (last && last.date === today) {
+        last.endBalance = totalBalance;
+        last.pnl        = totalBalance - last.startBalance;
+    } else {
+        portfolio.dailyHistory.push({
+            date:         today,
+            startBalance: totalBalance,
+            endBalance:   totalBalance,
+            pnl:          0
+        });
+        if (portfolio.dailyHistory.length > 365) portfolio.dailyHistory.shift();
+    }
+    savePortfolio(portfolio);
+}
+
 // ─── Histórico de trades (log separado, append-only) ─────────────────────────
 
 export function appendTradeLog(engineKey, trade) {

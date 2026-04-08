@@ -8,7 +8,8 @@
       "Read(//tmp/**)",
       "Bash(ls -lh *.json)",
       "Bash(node --input-type=module --eval \"import\\('./src/index.js'\\).then\\(\\(\\) => setTimeout\\(\\(\\) => process.exit\\(0\\), 3000\\)\\).catch\\(e => { console.error\\(e.message\\); process.exit\\(1\\); }\\)\")",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(grep -v \"^$\")"
     ]
   }
 }

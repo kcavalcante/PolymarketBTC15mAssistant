@@ -38,6 +38,7 @@
                 <button onclick="switchTab('sol')" class="tab-btn pb-4">SOL</button>
                 <button onclick="switchTab('xrp')" class="tab-btn pb-4">XRP</button>
                 <button onclick="switchTab('weather')" class="tab-btn pb-4">☁️ Clima</button>
+                <button onclick="switchTab('banca')" class="tab-btn pb-4 text-yellow-400">📊 Banca</button>
                 <button onclick="switchTab('logs')" class="tab-btn pb-4 text-purple-400">⚙️ Logs</button>
             </div>
         </div>
@@ -258,6 +259,24 @@
                         <p class="text-xs text-gray-400 uppercase font-bold mb-3">Regime / Indicadores</p>
                         <div class="space-y-2 text-sm font-mono" id="eth-indicators">—</div>
                     </div>
+                    <div class="poly-panel p-5">
+                        <h2 class="text-sm font-semibold mb-4 text-[#858a93]">Parâmetros Operacionais</h2>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Timeframe (Min)</label>
+                                     <input type="number" id="eth-cfg-timeframe" class="w-full bg-[#0f1114] border border-[#2d3138] rounded-md px-3 py-2 text-sm text-white outline-none focus:border-blue-500"></div>
+                                <div><label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Stake Base ($)</label>
+                                     <input type="number" id="eth-cfg-stake" class="w-full bg-[#0f1114] border border-blue-500/50 rounded-md px-3 py-2 text-sm text-white font-bold outline-none"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-[11px] font-bold text-green-500 uppercase mb-1">Stop Win ($)</label>
+                                     <input type="number" id="eth-cfg-stopwin" class="w-full bg-[#0f1114] border border-green-500/30 rounded-md px-3 py-2 text-sm text-white outline-none"></div>
+                                <div><label class="block text-[11px] font-bold text-red-500 uppercase mb-1">Stop Loss ($)</label>
+                                     <input type="number" id="eth-cfg-stoploss" class="w-full bg-[#0f1114] border border-red-500/30 rounded-md px-3 py-2 text-sm text-white outline-none"></div>
+                            </div>
+                            <button onclick="saveCfg('eth')" class="w-full bg-[#2d3138] hover:bg-[#3d434d] text-white font-semibold py-2.5 rounded-md text-sm transition">Gravar Limites</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -315,6 +334,24 @@
                         <p class="text-xs text-gray-400 uppercase font-bold mb-3">Regime / Indicadores</p>
                         <div class="space-y-2 text-sm font-mono" id="sol-indicators">—</div>
                     </div>
+                    <div class="poly-panel p-5">
+                        <h2 class="text-sm font-semibold mb-4 text-[#858a93]">Parâmetros Operacionais</h2>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Timeframe (Min)</label>
+                                     <input type="number" id="sol-cfg-timeframe" class="w-full bg-[#0f1114] border border-[#2d3138] rounded-md px-3 py-2 text-sm text-white outline-none focus:border-blue-500"></div>
+                                <div><label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Stake Base ($)</label>
+                                     <input type="number" id="sol-cfg-stake" class="w-full bg-[#0f1114] border border-blue-500/50 rounded-md px-3 py-2 text-sm text-white font-bold outline-none"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-[11px] font-bold text-green-500 uppercase mb-1">Stop Win ($)</label>
+                                     <input type="number" id="sol-cfg-stopwin" class="w-full bg-[#0f1114] border border-green-500/30 rounded-md px-3 py-2 text-sm text-white outline-none"></div>
+                                <div><label class="block text-[11px] font-bold text-red-500 uppercase mb-1">Stop Loss ($)</label>
+                                     <input type="number" id="sol-cfg-stoploss" class="w-full bg-[#0f1114] border border-red-500/30 rounded-md px-3 py-2 text-sm text-white outline-none"></div>
+                            </div>
+                            <button onclick="saveCfg('sol')" class="w-full bg-[#2d3138] hover:bg-[#3d434d] text-white font-semibold py-2.5 rounded-md text-sm transition">Gravar Limites</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -371,6 +408,24 @@
                     <div class="poly-panel p-5">
                         <p class="text-xs text-gray-400 uppercase font-bold mb-3">Regime / Indicadores</p>
                         <div class="space-y-2 text-sm font-mono" id="xrp-indicators">—</div>
+                    </div>
+                    <div class="poly-panel p-5">
+                        <h2 class="text-sm font-semibold mb-4 text-[#858a93]">Parâmetros Operacionais</h2>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Timeframe (Min)</label>
+                                     <input type="number" id="xrp-cfg-timeframe" class="w-full bg-[#0f1114] border border-[#2d3138] rounded-md px-3 py-2 text-sm text-white outline-none focus:border-blue-500"></div>
+                                <div><label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Stake Base ($)</label>
+                                     <input type="number" id="xrp-cfg-stake" class="w-full bg-[#0f1114] border border-blue-500/50 rounded-md px-3 py-2 text-sm text-white font-bold outline-none"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-[11px] font-bold text-green-500 uppercase mb-1">Stop Win ($)</label>
+                                     <input type="number" id="xrp-cfg-stopwin" class="w-full bg-[#0f1114] border border-green-500/30 rounded-md px-3 py-2 text-sm text-white outline-none"></div>
+                                <div><label class="block text-[11px] font-bold text-red-500 uppercase mb-1">Stop Loss ($)</label>
+                                     <input type="number" id="xrp-cfg-stoploss" class="w-full bg-[#0f1114] border border-red-500/30 rounded-md px-3 py-2 text-sm text-white outline-none"></div>
+                            </div>
+                            <button onclick="saveCfg('xrp')" class="w-full bg-[#2d3138] hover:bg-[#3d434d] text-white font-semibold py-2.5 rounded-md text-sm transition">Gravar Limites</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -433,6 +488,60 @@
                 </div>
                 <div id="w-engine-logs" class="p-5 font-mono text-[11px] overflow-y-auto space-y-1 flex-1">
                     <div class="text-gray-500">Aguardando varreduras...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= GESTÃO DE BANCA TAB ================= -->
+        <div id="tab-banca" class="hidden">
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="poly-panel p-5 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase font-bold tracking-widest mb-1">Saldo Hoje</p>
+                    <p id="banca-today-end" class="text-2xl font-black text-white">$0.00</p>
+                    <p id="banca-today-pnl" class="text-sm font-bold mt-1 text-gray-500">+$0.00</p>
+                </div>
+                <div class="poly-panel p-5 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase font-bold tracking-widest mb-1">Melhor Dia</p>
+                    <p id="banca-best-day" class="text-2xl font-black text-green-400">+$0.00</p>
+                    <p id="banca-best-date" class="text-xs text-gray-500 mt-1">—</p>
+                </div>
+                <div class="poly-panel p-5 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase font-bold tracking-widest mb-1">Pior Dia</p>
+                    <p id="banca-worst-day" class="text-2xl font-black text-red-400">$0.00</p>
+                    <p id="banca-worst-date" class="text-xs text-gray-500 mt-1">—</p>
+                </div>
+                <div class="poly-panel p-5 text-center">
+                    <p class="text-[11px] text-gray-400 uppercase font-bold tracking-widest mb-1">Dias Lucro</p>
+                    <p id="banca-win-days" class="text-2xl font-black text-blue-400">0/0</p>
+                    <p id="banca-win-rate" class="text-xs text-gray-500 mt-1">—</p>
+                </div>
+            </div>
+
+            <!-- Daily Table -->
+            <div class="poly-panel overflow-hidden">
+                <div class="px-5 py-4 border-b border-[#2d3138] flex justify-between items-center">
+                    <h2 class="text-sm font-semibold">Histórico Diário de Saldo</h2>
+                    <span class="text-[11px] text-gray-500">Últimos 90 dias • Total consolidado (BTC + ETH + SOL + XRP + Clima)</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-[11px] text-gray-400 uppercase tracking-wider border-b border-[#2d3138] bg-[#14171a]">
+                            <tr>
+                                <th class="py-3 px-5 font-medium">Data</th>
+                                <th class="py-3 px-5 font-medium text-right">Saldo Início</th>
+                                <th class="py-3 px-5 font-medium text-right">Saldo Fim</th>
+                                <th class="py-3 px-5 font-medium text-right">P&L do Dia</th>
+                                <th class="py-3 px-5 font-medium text-right">P&L %</th>
+                                <th class="py-3 px-5 font-medium text-right">Acumulado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="banca-tbody" class="divide-y divide-[#2d3138]">
+                            <tr>
+                                <td colspan="6" class="py-12 text-center text-gray-500 italic">Aguardando dados de histórico diário...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -540,6 +649,90 @@
                 stopLoss: ui.cfgLoss.value,
                 stake: ui.cfgStake.value
             }));
+        }
+
+        // Salva config a partir de qualquer aba de moeda alternativa
+        function saveCfg(coin) {
+            const k = coin.toLowerCase();
+            const cfg = {
+                action: "UPDATE_CONFIG",
+                timeframe: document.getElementById(`${k}-cfg-timeframe`)?.value,
+                stopWin:   document.getElementById(`${k}-cfg-stopwin`)?.value,
+                stopLoss:  document.getElementById(`${k}-cfg-stoploss`)?.value,
+                stake:     document.getElementById(`${k}-cfg-stake`)?.value
+            };
+            if (ws && ws.readyState === 1) ws.send(JSON.stringify(cfg));
+        }
+
+        // Preenche os campos de config das abas alt com os valores atuais
+        function syncAltCoinConfigs(config) {
+            for (const k of ['eth','sol','xrp']) {
+                const tf  = document.getElementById(`${k}-cfg-timeframe`);
+                const sw  = document.getElementById(`${k}-cfg-stopwin`);
+                const sl  = document.getElementById(`${k}-cfg-stoploss`);
+                const st  = document.getElementById(`${k}-cfg-stake`);
+                if (tf && !tf.value) { tf.value = config.timeframe; sw.value = config.stopWin; sl.value = config.stopLoss; st.value = config.stake; }
+            }
+        }
+
+        // ── Gestão de Banca ────────────────────────────────────────────────────
+        function renderBanca(history) {
+            if (!history || history.length === 0) return;
+
+            // Ordenar mais recente primeiro
+            const sorted = [...history].reverse();
+
+            // Métricas
+            let bestPnl = -Infinity, bestDate = '', worstPnl = Infinity, worstDate = '';
+            let winDays = 0;
+            sorted.forEach(d => {
+                if (d.pnl > bestPnl)  { bestPnl  = d.pnl;  bestDate  = d.date; }
+                if (d.pnl < worstPnl) { worstPnl = d.pnl;  worstDate = d.date; }
+                if (d.pnl > 0) winDays++;
+            });
+
+            const today = sorted[0];
+            const todayPnlCls = (today?.pnl ?? 0) >= 0 ? 'text-green-400' : 'text-red-400';
+
+            document.getElementById('banca-today-end').innerHTML  = fmtBal(today?.endBalance ?? 0);
+            document.getElementById('banca-today-pnl').innerHTML  = `<span class="${todayPnlCls}">${(today?.pnl ?? 0) >= 0 ? '+' : ''}$${(today?.pnl ?? 0).toFixed(2)}</span>`;
+            document.getElementById('banca-best-day').innerHTML   = `+$${Math.max(0, bestPnl).toFixed(2)}`;
+            document.getElementById('banca-best-date').textContent = bestDate;
+            document.getElementById('banca-worst-day').innerHTML  = `$${Math.min(0, worstPnl).toFixed(2)}`;
+            document.getElementById('banca-worst-date').textContent = worstDate;
+            document.getElementById('banca-win-days').textContent = `${winDays}/${sorted.length}`;
+            document.getElementById('banca-win-rate').textContent = sorted.length > 0
+                ? `${(winDays / sorted.length * 100).toFixed(0)}% dias lucrativos`
+                : '—';
+
+            // Tabela — recalcular acumulado de trás para frente
+            let accumulated = 0;
+            const tbody = document.getElementById('banca-tbody');
+            tbody.innerHTML = sorted.map((d, idx) => {
+                // Acumulado = pnl de todos os dias incluindo este e posteriores
+                // (mais fácil: acumulado = endBalance de hoje - startBalance do dia mais antigo)
+                const refStart = history[0]?.startBalance ?? 0;
+                accumulated = d.endBalance - refStart;
+
+                const pnl = d.pnl ?? (d.endBalance - d.startBalance);
+                const pnlSign  = pnl >= 0 ? '+' : '';
+                const pnlCls   = pnl > 0 ? 'text-green-400 font-bold' : pnl < 0 ? 'text-red-400 font-bold' : 'text-gray-400';
+                const accCls   = accumulated >= 0 ? 'text-green-400' : 'text-red-400';
+                const pnlPct   = d.startBalance !== 0
+                    ? (pnl / Math.abs(d.startBalance) * 100).toFixed(1) + '%'
+                    : '—';
+                const pnlPctCls = pnl >= 0 ? 'text-green-400' : 'text-red-400';
+                const rowBg    = idx === 0 ? 'bg-white/5' : 'hover:bg-[#1a1e23]';
+
+                return `<tr class="${rowBg} transition">
+                    <td class="py-3 px-5 font-semibold text-white">${d.date}</td>
+                    <td class="py-3 px-5 text-right text-gray-300 font-mono">$${(d.startBalance ?? 0).toFixed(2)}</td>
+                    <td class="py-3 px-5 text-right text-gray-300 font-mono">$${(d.endBalance ?? 0).toFixed(2)}</td>
+                    <td class="py-3 px-5 text-right font-mono ${pnlCls}">${pnlSign}$${Math.abs(pnl).toFixed(2)}</td>
+                    <td class="py-3 px-5 text-right font-mono ${pnlPctCls}">${pnlSign}${pnlPct}</td>
+                    <td class="py-3 px-5 text-right font-mono ${accCls}">${accumulated >= 0 ? '+' : ''}$${accumulated.toFixed(2)}</td>
+                </tr>`;
+            }).join('');
         }
 
         function pct(v) { return v != null ? (v*100).toFixed(1) + '%' : '--'; }
@@ -759,6 +952,7 @@
                     ui.cfgWin.value   = data.config.stopWin;
                     ui.cfgLoss.value  = data.config.stopLoss;
                     ui.cfgStake.value = data.config.stake;
+                    syncAltCoinConfigs(data.config);
                     firstRender = false;
                 }
 
@@ -790,6 +984,9 @@
 
                 // Overview (always updated)
                 updateOverview(data.engine, data.altCoins, data.weatherEngine);
+
+                // Gestão de Banca
+                if (data.dailyHistory) renderBanca(data.dailyHistory);
 
                 // Global logs mirror
                 if (data.engine?.logs) {
