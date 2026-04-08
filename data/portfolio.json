@@ -1,0 +1,1930 @@
+{
+  "version": 1,
+  "lastSaved": "2026-04-08T06:33:17.936Z",
+  "engines": {
+    "BTC": {
+      "virtualBalance": 51,
+      "stats": {
+        "predictions": 147,
+        "wins": 82,
+        "losses": 65,
+        "biggestWin": 3
+      },
+      "balanceHistory": [
+        {
+          "ts": 1775621701373,
+          "balance": 3
+        },
+        {
+          "ts": 1775621738292,
+          "balance": 0
+        },
+        {
+          "ts": 1775621750433,
+          "balance": 3
+        },
+        {
+          "ts": 1775621757147,
+          "balance": 6
+        },
+        {
+          "ts": 1775621792552,
+          "balance": 3
+        },
+        {
+          "ts": 1775621801638,
+          "balance": 0
+        },
+        {
+          "ts": 1775621813376,
+          "balance": 3
+        },
+        {
+          "ts": 1775621826333,
+          "balance": 0
+        },
+        {
+          "ts": 1775621932524,
+          "balance": 3
+        },
+        {
+          "ts": 1775621983909,
+          "balance": 0
+        },
+        {
+          "ts": 1775621999995,
+          "balance": 3
+        },
+        {
+          "ts": 1775622014054,
+          "balance": 0
+        },
+        {
+          "ts": 1775622047942,
+          "balance": -3
+        },
+        {
+          "ts": 1775622054748,
+          "balance": 0
+        },
+        {
+          "ts": 1775622062538,
+          "balance": 3
+        },
+        {
+          "ts": 1775622086349,
+          "balance": 0
+        },
+        {
+          "ts": 1775622112730,
+          "balance": 3
+        },
+        {
+          "ts": 1775622148391,
+          "balance": 0
+        },
+        {
+          "ts": 1775622175305,
+          "balance": -3
+        },
+        {
+          "ts": 1775622188212,
+          "balance": -6
+        },
+        {
+          "ts": 1775622655403,
+          "balance": -3
+        },
+        {
+          "ts": 1775622680751,
+          "balance": -6
+        },
+        {
+          "ts": 1775622709286,
+          "balance": -9
+        },
+        {
+          "ts": 1775622747293,
+          "balance": -6
+        },
+        {
+          "ts": 1775622787844,
+          "balance": -3
+        },
+        {
+          "ts": 1775622794337,
+          "balance": -6
+        },
+        {
+          "ts": 1775622802123,
+          "balance": -3
+        },
+        {
+          "ts": 1775622809897,
+          "balance": 0
+        },
+        {
+          "ts": 1775622813824,
+          "balance": 3
+        },
+        {
+          "ts": 1775622821603,
+          "balance": 0
+        },
+        {
+          "ts": 1775622832268,
+          "balance": -3
+        },
+        {
+          "ts": 1775622840512,
+          "balance": 0
+        },
+        {
+          "ts": 1775622846961,
+          "balance": 3
+        },
+        {
+          "ts": 1775622849541,
+          "balance": 6
+        },
+        {
+          "ts": 1775622857269,
+          "balance": 3
+        },
+        {
+          "ts": 1775622877919,
+          "balance": 6
+        },
+        {
+          "ts": 1775622932088,
+          "balance": 9
+        },
+        {
+          "ts": 1775623528302,
+          "balance": 6
+        },
+        {
+          "ts": 1775623552387,
+          "balance": 3
+        },
+        {
+          "ts": 1775623589950,
+          "balance": 0
+        },
+        {
+          "ts": 1775623611980,
+          "balance": 3
+        },
+        {
+          "ts": 1775623647240,
+          "balance": 0
+        },
+        {
+          "ts": 1775623671808,
+          "balance": -3
+        },
+        {
+          "ts": 1775623678287,
+          "balance": -6
+        },
+        {
+          "ts": 1775623689881,
+          "balance": -3
+        },
+        {
+          "ts": 1775623697639,
+          "balance": -6
+        },
+        {
+          "ts": 1775623714568,
+          "balance": -3
+        },
+        {
+          "ts": 1775623739143,
+          "balance": 0
+        },
+        {
+          "ts": 1775623752043,
+          "balance": -3
+        },
+        {
+          "ts": 1775623774016,
+          "balance": -6
+        },
+        {
+          "ts": 1775623788241,
+          "balance": -3
+        },
+        {
+          "ts": 1775623793433,
+          "balance": 0
+        },
+        {
+          "ts": 1775623832727,
+          "balance": -3
+        },
+        {
+          "ts": 1775623886838,
+          "balance": 0
+        },
+        {
+          "ts": 1775623892017,
+          "balance": 3
+        },
+        {
+          "ts": 1775623904922,
+          "balance": 6
+        },
+        {
+          "ts": 1775623917872,
+          "balance": 9
+        },
+        {
+          "ts": 1775624004708,
+          "balance": 6
+        },
+        {
+          "ts": 1775624009879,
+          "balance": 9
+        },
+        {
+          "ts": 1775624012501,
+          "balance": 12
+        },
+        {
+          "ts": 1775624017690,
+          "balance": 9
+        },
+        {
+          "ts": 1775624046838,
+          "balance": 6
+        },
+        {
+          "ts": 1775624073696,
+          "balance": 3
+        },
+        {
+          "ts": 1775624084035,
+          "balance": 6
+        },
+        {
+          "ts": 1775624094008,
+          "balance": 9
+        },
+        {
+          "ts": 1775624112634,
+          "balance": 6
+        },
+        {
+          "ts": 1775624116496,
+          "balance": 3
+        },
+        {
+          "ts": 1775624408049,
+          "balance": 6
+        },
+        {
+          "ts": 1775624439616,
+          "balance": 9
+        },
+        {
+          "ts": 1775624447374,
+          "balance": 6
+        },
+        {
+          "ts": 1775624449972,
+          "balance": 9
+        },
+        {
+          "ts": 1775624470974,
+          "balance": 12
+        },
+        {
+          "ts": 1775624479368,
+          "balance": 15
+        },
+        {
+          "ts": 1775624483241,
+          "balance": 18
+        },
+        {
+          "ts": 1775624495508,
+          "balance": 15
+        },
+        {
+          "ts": 1775624505822,
+          "balance": 18
+        },
+        {
+          "ts": 1775624513626,
+          "balance": 21
+        },
+        {
+          "ts": 1775624596061,
+          "balance": 18
+        },
+        {
+          "ts": 1775624601224,
+          "balance": 21
+        },
+        {
+          "ts": 1775625301604,
+          "balance": 18
+        },
+        {
+          "ts": 1775625351061,
+          "balance": 21
+        },
+        {
+          "ts": 1775625359497,
+          "balance": 24
+        },
+        {
+          "ts": 1775625371354,
+          "balance": 27
+        },
+        {
+          "ts": 1775625381685,
+          "balance": 30
+        },
+        {
+          "ts": 1775625421993,
+          "balance": 33
+        },
+        {
+          "ts": 1775626236712,
+          "balance": 30
+        },
+        {
+          "ts": 1775626240575,
+          "balance": 27
+        },
+        {
+          "ts": 1775626245783,
+          "balance": 24
+        },
+        {
+          "ts": 1775626256468,
+          "balance": 21
+        },
+        {
+          "ts": 1775626260316,
+          "balance": 18
+        },
+        {
+          "ts": 1775626275899,
+          "balance": 15
+        },
+        {
+          "ts": 1775626308399,
+          "balance": 18
+        },
+        {
+          "ts": 1775626323982,
+          "balance": 15
+        },
+        {
+          "ts": 1775626356662,
+          "balance": 18
+        },
+        {
+          "ts": 1775626366987,
+          "balance": 21
+        },
+        {
+          "ts": 1775626382492,
+          "balance": 18
+        },
+        {
+          "ts": 1775626391504,
+          "balance": 15
+        },
+        {
+          "ts": 1775626405359,
+          "balance": 12
+        },
+        {
+          "ts": 1775626412838,
+          "balance": 15
+        },
+        {
+          "ts": 1775626416058,
+          "balance": 18
+        },
+        {
+          "ts": 1775626419373,
+          "balance": 15
+        },
+        {
+          "ts": 1775626433488,
+          "balance": 18
+        },
+        {
+          "ts": 1775626478549,
+          "balance": 15
+        },
+        {
+          "ts": 1775626483775,
+          "balance": 18
+        },
+        {
+          "ts": 1775626524720,
+          "balance": 15
+        },
+        {
+          "ts": 1775626547521,
+          "balance": 18
+        },
+        {
+          "ts": 1775626558041,
+          "balance": 15
+        },
+        {
+          "ts": 1775626582849,
+          "balance": 12
+        },
+        {
+          "ts": 1775626593247,
+          "balance": 9
+        },
+        {
+          "ts": 1775626614199,
+          "balance": 12
+        },
+        {
+          "ts": 1775626631077,
+          "balance": 15
+        },
+        {
+          "ts": 1775626637564,
+          "balance": 18
+        },
+        {
+          "ts": 1775626661048,
+          "balance": 15
+        },
+        {
+          "ts": 1775626674724,
+          "balance": 12
+        },
+        {
+          "ts": 1775626678813,
+          "balance": 15
+        },
+        {
+          "ts": 1775626683460,
+          "balance": 12
+        },
+        {
+          "ts": 1775626697965,
+          "balance": 15
+        },
+        {
+          "ts": 1775626705360,
+          "balance": 18
+        },
+        {
+          "ts": 1775626709351,
+          "balance": 15
+        },
+        {
+          "ts": 1775626739240,
+          "balance": 18
+        },
+        {
+          "ts": 1775626749576,
+          "balance": 21
+        },
+        {
+          "ts": 1775626801765,
+          "balance": 18
+        },
+        {
+          "ts": 1775627165067,
+          "balance": 21
+        },
+        {
+          "ts": 1775627191711,
+          "balance": 24
+        },
+        {
+          "ts": 1775627203323,
+          "balance": 27
+        },
+        {
+          "ts": 1775627217510,
+          "balance": 30
+        },
+        {
+          "ts": 1775628059959,
+          "balance": 33
+        },
+        {
+          "ts": 1775628233780,
+          "balance": 30
+        },
+        {
+          "ts": 1775628282924,
+          "balance": 27
+        },
+        {
+          "ts": 1775628375863,
+          "balance": 30
+        },
+        {
+          "ts": 1775628405864,
+          "balance": 33
+        },
+        {
+          "ts": 1775628411029,
+          "balance": 36
+        },
+        {
+          "ts": 1775628420080,
+          "balance": 39
+        },
+        {
+          "ts": 1775628439548,
+          "balance": 42
+        },
+        {
+          "ts": 1775628444706,
+          "balance": 45
+        },
+        {
+          "ts": 1775628912110,
+          "balance": 48
+        },
+        {
+          "ts": 1775628926262,
+          "balance": 45
+        },
+        {
+          "ts": 1775628935358,
+          "balance": 48
+        },
+        {
+          "ts": 1775628956654,
+          "balance": 45
+        },
+        {
+          "ts": 1775629019081,
+          "balance": 48
+        },
+        {
+          "ts": 1775629843016,
+          "balance": 45
+        },
+        {
+          "ts": 1775629879599,
+          "balance": 48
+        },
+        {
+          "ts": 1775629908527,
+          "balance": 45
+        },
+        {
+          "ts": 1775629962440,
+          "balance": 48
+        },
+        {
+          "ts": 1775629968252,
+          "balance": 45
+        },
+        {
+          "ts": 1775629995344,
+          "balance": 48
+        },
+        {
+          "ts": 1775629997936,
+          "balance": 51
+        }
+      ],
+      "closedPositions": [
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.001,
+          "exitPrice": 0.45,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:15:01.373Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.46,
+          "exitPrice": 0.4,
+          "pnl": -3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:15:38.292Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.41,
+          "exitPrice": 0.46,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:15:50.433Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.47,
+          "exitPrice": 0.52,
+          "pnl": 3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T04:15:57.147Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.52,
+          "exitPrice": 0.46,
+          "pnl": -3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:16:32.552Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.46,
+          "exitPrice": 0.4,
+          "pnl": -3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:16:41.638Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.4,
+          "exitPrice": 0.47,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:16:53.376Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.47,
+          "exitPrice": 0.41,
+          "pnl": -3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:17:06.333Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.4,
+          "exitPrice": 0.59,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:18:52.524Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.64,
+          "exitPrice": 0.5,
+          "pnl": -3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:19:43.909Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.5,
+          "exitPrice": 0.55,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:19:59.995Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.55,
+          "exitPrice": 0.49,
+          "pnl": -3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:20:14.054Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.53,
+          "exitPrice": 0.44,
+          "pnl": -3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:20:47.942Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.45,
+          "exitPrice": 0.51,
+          "pnl": 3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:20:54.748Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.55,
+          "exitPrice": 0.62,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:21:02.538Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.55,
+          "exitPrice": 0.5,
+          "pnl": -3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:21:26.349Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.5,
+          "exitPrice": 0.58,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:21:52.730Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.55,
+          "exitPrice": 0.49,
+          "pnl": -3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:22:28.391Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.48,
+          "exitPrice": 0.41,
+          "pnl": -3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:22:55.305Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "DOWN",
+          "entryPrice": 0.41,
+          "exitPrice": 0.35,
+          "pnl": -3,
+          "newBalance": -6,
+          "savedAt": "2026-04-08T04:23:08.212Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.26,
+          "exitPrice": 0.34,
+          "pnl": 3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:30:55.403Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.37,
+          "exitPrice": 0.31,
+          "pnl": -3,
+          "newBalance": -6,
+          "savedAt": "2026-04-08T04:31:20.751Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.31,
+          "exitPrice": 0.24,
+          "pnl": -3,
+          "newBalance": -9,
+          "savedAt": "2026-04-08T04:31:49.286Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.25,
+          "exitPrice": 0.32,
+          "pnl": 3,
+          "newBalance": -6,
+          "savedAt": "2026-04-08T04:32:27.293Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.33,
+          "exitPrice": 0.43,
+          "pnl": 3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:33:07.844Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.48,
+          "exitPrice": 0.41,
+          "pnl": -3,
+          "newBalance": -6,
+          "savedAt": "2026-04-08T04:33:14.337Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.41,
+          "exitPrice": 0.48,
+          "pnl": 3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:33:22.123Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.48,
+          "exitPrice": 0.58,
+          "pnl": 3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:33:29.897Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.58,
+          "exitPrice": 0.65,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:33:33.824Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.65,
+          "exitPrice": 0.55,
+          "pnl": -3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:33:41.603Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.55,
+          "exitPrice": 0.48,
+          "pnl": -3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:33:52.268Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.49,
+          "exitPrice": 0.55,
+          "pnl": 3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:34:00.512Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.56,
+          "exitPrice": 0.65,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:34:06.961Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.66,
+          "exitPrice": 0.72,
+          "pnl": 3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T04:34:09.541Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.72,
+          "exitPrice": 0.66,
+          "pnl": -3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:34:17.269Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.67,
+          "exitPrice": 0.76,
+          "pnl": 3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T04:34:37.919Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.65,
+          "exitPrice": 0.71,
+          "pnl": 3,
+          "newBalance": 9,
+          "savedAt": "2026-04-08T04:35:32.088Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.77,
+          "exitPrice": 0.64,
+          "pnl": -3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T04:45:28.302Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.64,
+          "exitPrice": 0.55,
+          "pnl": -3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:45:52.387Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.56,
+          "exitPrice": 0.49,
+          "pnl": -3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:46:29.950Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.49,
+          "exitPrice": 0.54,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:46:51.980Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.49,
+          "exitPrice": 0.43,
+          "pnl": -3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:47:27.240Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.44,
+          "exitPrice": 0.38,
+          "pnl": -3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:47:51.808Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.38,
+          "exitPrice": 0.28,
+          "pnl": -3,
+          "newBalance": -6,
+          "savedAt": "2026-04-08T04:47:58.287Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.23,
+          "exitPrice": 0.28,
+          "pnl": 3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:48:09.881Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.23,
+          "exitPrice": 0.18,
+          "pnl": -3,
+          "newBalance": -6,
+          "savedAt": "2026-04-08T04:48:17.639Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.18,
+          "exitPrice": 0.24,
+          "pnl": 3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:48:34.568Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.25,
+          "exitPrice": 0.35,
+          "pnl": 3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:48:59.143Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.37,
+          "exitPrice": 0.28,
+          "pnl": -3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:49:12.043Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.22,
+          "exitPrice": 0.16,
+          "pnl": -3,
+          "newBalance": -6,
+          "savedAt": "2026-04-08T04:49:34.016Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.18,
+          "exitPrice": 0.27,
+          "pnl": 3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:49:48.241Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.27,
+          "exitPrice": 0.35,
+          "pnl": 3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:49:53.433Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.35,
+          "exitPrice": 0.26,
+          "pnl": -3,
+          "newBalance": -3,
+          "savedAt": "2026-04-08T04:50:32.727Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.31,
+          "exitPrice": 0.37,
+          "pnl": 3,
+          "newBalance": 0,
+          "savedAt": "2026-04-08T04:51:26.838Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.36,
+          "exitPrice": 0.45,
+          "pnl": 3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:51:32.017Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.46,
+          "exitPrice": 0.52,
+          "pnl": 3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T04:51:44.922Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.5,
+          "exitPrice": 0.71,
+          "pnl": 3,
+          "newBalance": 9,
+          "savedAt": "2026-04-08T04:51:57.872Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.53,
+          "exitPrice": 0.47,
+          "pnl": -3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T04:53:24.708Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.34,
+          "exitPrice": 0.4,
+          "pnl": 3,
+          "newBalance": 9,
+          "savedAt": "2026-04-08T04:53:29.879Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.43,
+          "exitPrice": 0.54,
+          "pnl": 3,
+          "newBalance": 12,
+          "savedAt": "2026-04-08T04:53:32.501Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.51,
+          "exitPrice": 0.43,
+          "pnl": -3,
+          "newBalance": 9,
+          "savedAt": "2026-04-08T04:53:37.690Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.43,
+          "exitPrice": 0.36,
+          "pnl": -3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T04:54:06.838Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.22,
+          "exitPrice": 0.12,
+          "pnl": -3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:54:33.696Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.2,
+          "exitPrice": 0.26,
+          "pnl": 3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T04:54:44.035Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.26,
+          "exitPrice": 0.33,
+          "pnl": 3,
+          "newBalance": 9,
+          "savedAt": "2026-04-08T04:54:54.008Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.31,
+          "exitPrice": 0.19,
+          "pnl": -3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T04:55:12.634Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.17,
+          "exitPrice": 0.11,
+          "pnl": -3,
+          "newBalance": 3,
+          "savedAt": "2026-04-08T04:55:16.496Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.49,
+          "exitPrice": 0.55,
+          "pnl": 3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T05:00:08.049Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.55,
+          "exitPrice": 0.62,
+          "pnl": 3,
+          "newBalance": 9,
+          "savedAt": "2026-04-08T05:00:39.616Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.63,
+          "exitPrice": 0.55,
+          "pnl": -3,
+          "newBalance": 6,
+          "savedAt": "2026-04-08T05:00:47.374Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.55,
+          "exitPrice": 0.62,
+          "pnl": 3,
+          "newBalance": 9,
+          "savedAt": "2026-04-08T05:00:49.972Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.58,
+          "exitPrice": 0.63,
+          "pnl": 3,
+          "newBalance": 12,
+          "savedAt": "2026-04-08T05:01:10.974Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.63,
+          "exitPrice": 0.68,
+          "pnl": 3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:01:19.368Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.69,
+          "exitPrice": 0.75,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:01:23.241Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.75,
+          "exitPrice": 0.7,
+          "pnl": -3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:01:35.508Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.7,
+          "exitPrice": 0.75,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:01:45.822Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.75,
+          "exitPrice": 0.8,
+          "pnl": 3,
+          "newBalance": 21,
+          "savedAt": "2026-04-08T05:01:53.626Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.79,
+          "exitPrice": 0.74,
+          "pnl": -3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:03:16.061Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.74,
+          "exitPrice": 0.81,
+          "pnl": 3,
+          "newBalance": 21,
+          "savedAt": "2026-04-08T05:03:21.224Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.5,
+          "exitPrice": 0.44,
+          "pnl": -3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:15:01.604Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.43,
+          "exitPrice": 0.58,
+          "pnl": 3,
+          "newBalance": 21,
+          "savedAt": "2026-04-08T05:15:51.061Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.6,
+          "exitPrice": 0.67,
+          "pnl": 3,
+          "newBalance": 24,
+          "savedAt": "2026-04-08T05:15:59.497Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.67,
+          "exitPrice": 0.73,
+          "pnl": 3,
+          "newBalance": 27,
+          "savedAt": "2026-04-08T05:16:11.354Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.76,
+          "exitPrice": 0.81,
+          "pnl": 3,
+          "newBalance": 30,
+          "savedAt": "2026-04-08T05:16:21.685Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.79,
+          "exitPrice": 0.86,
+          "pnl": 3,
+          "newBalance": 33,
+          "savedAt": "2026-04-08T05:17:01.993Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.7,
+          "exitPrice": 0.58,
+          "pnl": -3,
+          "newBalance": 30,
+          "savedAt": "2026-04-08T05:30:36.712Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.53,
+          "exitPrice": 0.46,
+          "pnl": -3,
+          "newBalance": 27,
+          "savedAt": "2026-04-08T05:30:40.575Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.47,
+          "exitPrice": 0.41,
+          "pnl": -3,
+          "newBalance": 24,
+          "savedAt": "2026-04-08T05:30:45.783Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.41,
+          "exitPrice": 0.35,
+          "pnl": -3,
+          "newBalance": 21,
+          "savedAt": "2026-04-08T05:30:56.468Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.41,
+          "exitPrice": 0.35,
+          "pnl": -3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:31:00.316Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.35,
+          "exitPrice": 0.29,
+          "pnl": -3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:31:15.899Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.28,
+          "exitPrice": 0.34,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:31:48.399Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.37,
+          "exitPrice": 0.31,
+          "pnl": -3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:32:03.982Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.28,
+          "exitPrice": 0.36,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:32:36.662Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.36,
+          "exitPrice": 0.43,
+          "pnl": 3,
+          "newBalance": 21,
+          "savedAt": "2026-04-08T05:32:46.987Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.5,
+          "exitPrice": 0.44,
+          "pnl": -3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:33:02.492Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.45,
+          "exitPrice": 0.36,
+          "pnl": -3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:33:11.504Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.37,
+          "exitPrice": 0.28,
+          "pnl": -3,
+          "newBalance": 12,
+          "savedAt": "2026-04-08T05:33:25.359Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.29,
+          "exitPrice": 0.41,
+          "pnl": 3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:33:32.838Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.45,
+          "exitPrice": 0.51,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:33:36.058Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.51,
+          "exitPrice": 0.45,
+          "pnl": -3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:33:39.373Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.46,
+          "exitPrice": 0.53,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:33:53.488Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.48,
+          "exitPrice": 0.41,
+          "pnl": -3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:34:38.549Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.32,
+          "exitPrice": 0.39,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:34:43.775Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.39,
+          "exitPrice": 0.29,
+          "pnl": -3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:35:24.720Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.31,
+          "exitPrice": 0.49,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:35:47.521Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.46,
+          "exitPrice": 0.35,
+          "pnl": -3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:35:58.041Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.36,
+          "exitPrice": 0.3,
+          "pnl": -3,
+          "newBalance": 12,
+          "savedAt": "2026-04-08T05:36:22.849Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.33,
+          "exitPrice": 0.26,
+          "pnl": -3,
+          "newBalance": 9,
+          "savedAt": "2026-04-08T05:36:33.247Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.25,
+          "exitPrice": 0.38,
+          "pnl": 3,
+          "newBalance": 12,
+          "savedAt": "2026-04-08T05:36:54.199Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.43,
+          "exitPrice": 0.53,
+          "pnl": 3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:37:11.077Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.53,
+          "exitPrice": 0.6,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:37:17.564Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.56,
+          "exitPrice": 0.49,
+          "pnl": -3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:37:41.048Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.53,
+          "exitPrice": 0.43,
+          "pnl": -3,
+          "newBalance": 12,
+          "savedAt": "2026-04-08T05:37:54.724Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.43,
+          "exitPrice": 0.5,
+          "pnl": 3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:37:58.813Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.53,
+          "exitPrice": 0.43,
+          "pnl": -3,
+          "newBalance": 12,
+          "savedAt": "2026-04-08T05:38:03.460Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.42,
+          "exitPrice": 0.48,
+          "pnl": 3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:38:17.965Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.46,
+          "exitPrice": 0.52,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:38:25.360Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.53,
+          "exitPrice": 0.47,
+          "pnl": -3,
+          "newBalance": 15,
+          "savedAt": "2026-04-08T05:38:29.351Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.42,
+          "exitPrice": 0.48,
+          "pnl": 3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:38:59.240Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.49,
+          "exitPrice": 0.56,
+          "pnl": 3,
+          "newBalance": 21,
+          "savedAt": "2026-04-08T05:39:09.576Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.13,
+          "exitPrice": 0.05,
+          "pnl": -3,
+          "newBalance": 18,
+          "savedAt": "2026-04-08T05:40:01.765Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.54,
+          "exitPrice": 0.64,
+          "pnl": 3,
+          "newBalance": 21,
+          "savedAt": "2026-04-08T05:46:05.067Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.68,
+          "exitPrice": 0.78,
+          "pnl": 3,
+          "newBalance": 24,
+          "savedAt": "2026-04-08T05:46:31.711Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.78,
+          "exitPrice": 0.87,
+          "pnl": 3,
+          "newBalance": 27,
+          "savedAt": "2026-04-08T05:46:43.323Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.79,
+          "exitPrice": 0.87,
+          "pnl": 3,
+          "newBalance": 30,
+          "savedAt": "2026-04-08T05:46:57.510Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.08,
+          "exitPrice": 0.13,
+          "pnl": 3,
+          "newBalance": 33,
+          "savedAt": "2026-04-08T06:00:59.959Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.13,
+          "exitPrice": 0.08,
+          "pnl": -3,
+          "newBalance": 30,
+          "savedAt": "2026-04-08T06:03:53.780Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.08,
+          "exitPrice": 0.03,
+          "pnl": -3,
+          "newBalance": 27,
+          "savedAt": "2026-04-08T06:04:42.924Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.03,
+          "exitPrice": 0.08,
+          "pnl": 3,
+          "newBalance": 30,
+          "savedAt": "2026-04-08T06:06:15.863Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.08,
+          "exitPrice": 0.13,
+          "pnl": 3,
+          "newBalance": 33,
+          "savedAt": "2026-04-08T06:06:45.864Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.13,
+          "exitPrice": 0.27,
+          "pnl": 3,
+          "newBalance": 36,
+          "savedAt": "2026-04-08T06:06:51.029Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.26,
+          "exitPrice": 0.38,
+          "pnl": 3,
+          "newBalance": 39,
+          "savedAt": "2026-04-08T06:07:00.080Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.39,
+          "exitPrice": 0.45,
+          "pnl": 3,
+          "newBalance": 42,
+          "savedAt": "2026-04-08T06:07:19.548Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.44,
+          "exitPrice": 0.52,
+          "pnl": 3,
+          "newBalance": 45,
+          "savedAt": "2026-04-08T06:07:24.706Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.71,
+          "exitPrice": 0.77,
+          "pnl": 3,
+          "newBalance": 48,
+          "savedAt": "2026-04-08T06:15:12.110Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.77,
+          "exitPrice": 0.71,
+          "pnl": -3,
+          "newBalance": 45,
+          "savedAt": "2026-04-08T06:15:26.262Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.71,
+          "exitPrice": 0.78,
+          "pnl": 3,
+          "newBalance": 48,
+          "savedAt": "2026-04-08T06:15:35.358Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.78,
+          "exitPrice": 0.69,
+          "pnl": -3,
+          "newBalance": 45,
+          "savedAt": "2026-04-08T06:15:56.654Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.8,
+          "exitPrice": 0.86,
+          "pnl": 3,
+          "newBalance": 48,
+          "savedAt": "2026-04-08T06:16:59.081Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.32,
+          "exitPrice": 0.26,
+          "pnl": -3,
+          "newBalance": 45,
+          "savedAt": "2026-04-08T06:30:43.016Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.26,
+          "exitPrice": 0.33,
+          "pnl": 3,
+          "newBalance": 48,
+          "savedAt": "2026-04-08T06:31:19.599Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.34,
+          "exitPrice": 0.29,
+          "pnl": -3,
+          "newBalance": 45,
+          "savedAt": "2026-04-08T06:31:48.527Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.28,
+          "exitPrice": 0.34,
+          "pnl": 3,
+          "newBalance": 48,
+          "savedAt": "2026-04-08T06:32:42.440Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.27,
+          "exitPrice": 0.21,
+          "pnl": -3,
+          "newBalance": 45,
+          "savedAt": "2026-04-08T06:32:48.252Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.21,
+          "exitPrice": 0.26,
+          "pnl": 3,
+          "newBalance": 48,
+          "savedAt": "2026-04-08T06:33:15.344Z"
+        },
+        {
+          "coin": "BTC",
+          "side": "UP",
+          "entryPrice": 0.26,
+          "exitPrice": 0.36,
+          "pnl": 3,
+          "newBalance": 51,
+          "savedAt": "2026-04-08T06:33:17.936Z"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polymarket Autocontrol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f1114; color: #ffffff; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f1114; }
+        ::-webkit-scrollbar-thumb { background: #2d3138; border-radius: 4px; }
+        .tab-btn { color: #858a93; border-bottom: 2px solid transparent; transition: all 0.2s; }
+        .tab-btn:hover { color: #ffffff; }
+        .tab-btn.active { border-bottom: 2px solid #ffffff; color: #ffffff; }
+        .poly-panel { background-color: #1a1e23; border: 1px solid #2d3138; border-radius: 12px; }
+        .poly-btn { background-color: #ffffff; color: #000000; font-weight: 600; padding: 6px 16px; border-radius: 8px; font-size: 14px; transition: opacity 0.2s; }
+        .poly-btn:hover { opacity: 0.9; }
+        .coin-tag { display:inline-block; padding:1px 6px; border-radius:4px; font-size:10px; font-weight:700; }
+    </style>
+</head>
+<body class="min-h-screen pb-10">
+
+    <!-- Top Nav -->
+    <nav class="bg-[#0f1114] border-b border-[#2d3138] px-6 flex justify-between items-center h-16 fixed top-0 z-50 w-full">
+        <div class="flex items-center gap-6 overflow-x-auto">
+            <h1 class="text-xl font-bold flex items-center gap-2 shrink-0">
+                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500"></div>
+                L2 AI Agent
+                <span id="connection-status" class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-400">ONLINE</span>
+            </h1>
+            <div class="flex space-x-5 text-sm font-semibold mt-1 shrink-0">
+                <button onclick="switchTab('general')" class="tab-btn active pb-4">Visão Geral</button>
+                <button onclick="switchTab('crypto')" class="tab-btn pb-4">BTC</button>
+                <button onclick="switchTab('eth')" class="tab-btn pb-4">ETH</button>
+                <button onclick="switchTab('sol')" class="tab-btn pb-4">SOL</button>
+                <button onclick="switchTab('xrp')" class="tab-btn pb-4">XRP</button>
+                <button onclick="switchTab('weather')" class="tab-btn pb-4">☁️ Clima</button>
+                <button onclick="switchTab('logs')" class="tab-btn pb-4 text-purple-400">⚙️ Logs</button>
+            </div>
+        </div>
+        <div class="shrink-0 ml-4">
+            <button id="toggle-engine-btn" class="poly-btn" onclick="toggleEngine()">Iniciar Automação</button>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="pt-24 px-4 max-w-6xl mx-auto space-y-6">
+
+        <!-- ================= VISÃO GERAL TAB ================= -->
+        <div id="tab-general" class="block">
+            <!-- Total Balance + Chart -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <!-- Profile Card -->
+                <div class="poly-panel p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-cyan-400 via-blue-500 to-purple-600 shadow-lg shadow-purple-500/20"></div>
+                            <div>
+                                <h2 class="text-xl font-bold">Node Agent Matrix</h2>
+                                <p class="text-xs text-gray-400">Multi-Coin Hedge Fund (L2)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mt-4 border-t border-gray-700/50 pt-4">
+                        <div>
+                            <p id="stat-positions-value" class="text-lg font-bold text-white">$0.00</p>
+                            <p class="text-[11px] text-gray-400 uppercase tracking-wide">Pos Value</p>
+                        </div>
+                        <div>
+                            <p id="stat-biggest-win" class="text-lg font-bold text-white">$0.00</p>
+                            <p class="text-[11px] text-gray-400 uppercase tracking-wide">Best Win</p>
+                        </div>
+                        <div>
+                            <p id="stat-predictions" class="text-lg font-bold text-white">0</p>
+                            <p class="text-[11px] text-gray-400 uppercase tracking-wide">Trades</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PNL Chart (Total) -->
+                <div class="poly-panel p-6 md:col-span-2 relative">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-[12px] text-green-400 font-semibold">Profit/Loss Total Portfolio</p>
+                            <h2 id="gen-balance" class="text-3xl font-black mt-1">$0.00</h2>
+                            <p class="text-xs text-gray-400 mt-1">Saldo virtual consolidado (BTC + ETH + SOL + XRP + Clima)</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-28 relative">
+                        <canvas id="pnlChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Per-Coin Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+                <div class="poly-panel p-4 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">BTC</p>
+                    <p id="ov-btc-bal" class="text-lg font-black text-white">$0.00</p>
+                    <p id="ov-btc-trades" class="text-[11px] text-gray-500 mt-1">0 trades</p>
+                    <p id="ov-btc-signal" class="text-[10px] font-bold mt-1 text-gray-600">—</p>
+                </div>
+                <div class="poly-panel p-4 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">ETH</p>
+                    <p id="ov-eth-bal" class="text-lg font-black text-white">$0.00</p>
+                    <p id="ov-eth-trades" class="text-[11px] text-gray-500 mt-1">0 trades</p>
+                    <p id="ov-eth-signal" class="text-[10px] font-bold mt-1 text-gray-600">—</p>
+                </div>
+                <div class="poly-panel p-4 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">SOL</p>
+                    <p id="ov-sol-bal" class="text-lg font-black text-white">$0.00</p>
+                    <p id="ov-sol-trades" class="text-[11px] text-gray-500 mt-1">0 trades</p>
+                    <p id="ov-sol-signal" class="text-[10px] font-bold mt-1 text-gray-600">—</p>
+                </div>
+                <div class="poly-panel p-4 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">XRP</p>
+                    <p id="ov-xrp-bal" class="text-lg font-black text-white">$0.00</p>
+                    <p id="ov-xrp-trades" class="text-[11px] text-gray-500 mt-1">0 trades</p>
+                    <p id="ov-xrp-signal" class="text-[10px] font-bold mt-1 text-gray-600">—</p>
+                </div>
+                <div class="poly-panel p-4 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">☁️ CLIMA</p>
+                    <p id="ov-weather-bal" class="text-lg font-black text-white">$0.00</p>
+                    <p id="ov-weather-trades" class="text-[11px] text-gray-500 mt-1">0 trades</p>
+                    <p id="ov-weather-signal" class="text-[10px] font-bold mt-1 text-gray-600">—</p>
+                </div>
+            </div>
+
+            <!-- All Positions Table -->
+            <div>
+                <div class="flex gap-6 border-b border-[#2d3138] mb-4 text-sm font-semibold">
+                    <button id="tab-active" onclick="switchTableTab('active')" class="pb-2 border-b-2 border-white text-white transition">Active Positions</button>
+                    <button id="tab-closed" onclick="switchTableTab('closed')" class="pb-2 text-gray-400 hover:text-gray-300 border-b-2 border-transparent transition">Closed</button>
+                </div>
+                <div class="poly-panel overflow-hidden">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="text-[11px] text-gray-400 uppercase tracking-wider border-b border-[#2d3138] bg-[#14171a]">
+                            <tr>
+                                <th class="py-3 px-4 font-medium" style="width: 50%">MARKET</th>
+                                <th class="py-3 px-4 font-medium">AVG</th>
+                                <th class="py-3 px-4 font-medium">CURRENT</th>
+                                <th class="py-3 px-4 font-medium text-right">VALUE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="positions-tbody" class="divide-y divide-[#2d3138]">
+                            <tr>
+                                <td colspan="4" class="py-12 text-center text-gray-500 italic">Nenhuma posição ativa no momento. Aguardando gatilho do robô...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ================= BTC TAB ================= -->
+        <div id="tab-crypto" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="poly-panel flex flex-col h-[500px]">
+                    <div class="px-5 py-4 border-b border-[#2d3138] flex justify-between items-center">
+                        <h2 class="text-sm font-semibold">Terminal Lógico BTC</h2>
+                        <span class="text-[11px] text-gray-500 font-mono">Bitcoin 15m Momentum</span>
+                    </div>
+                    <div id="gen-logs" class="p-5 font-mono text-[11px] overflow-y-auto space-y-1 flex-1">
+                        Aguardando pacotes dos motores L1/L2...
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="poly-panel p-5 grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase tracking-widest font-bold">MODEL UP</span>
+                            <span id="model-up" class="block text-3xl font-black mt-2 text-green-400">--%</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase tracking-widest font-bold">MODEL DOWN</span>
+                            <span id="model-down" class="block text-3xl font-black mt-2 text-red-500">--%</span>
+                        </div>
+                        <div class="col-span-2 mt-2 pt-4 border-t border-[#2d3138]">
+                            <span class="text-[11px] text-gray-400 uppercase tracking-widest font-bold block mb-2">DECISÃO ALGORÍTMICA ATUAL</span>
+                            <span id="signal" class="px-4 py-1.5 rounded-md bg-[#0f1114] border border-[#2d3138] text-gray-300 font-mono text-sm tracking-widest">Aguardando dados...</span>
+                        </div>
+                    </div>
+                    <div class="poly-panel p-5">
+                        <h2 class="text-sm font-semibold mb-4 text-[#858a93]">Parâmetros Operacionais (Risk Management)</h2>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Timeframe (Min)</label>
+                                     <input type="number" id="cfg-timeframe" class="w-full bg-[#0f1114] border border-[#2d3138] rounded-md px-3 py-2 text-sm text-white outline-none focus:border-blue-500"></div>
+                                <div><label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Stake Base ($)</label>
+                                     <input type="number" id="cfg-stake" class="w-full bg-[#0f1114] border border-blue-500/50 rounded-md px-3 py-2 text-sm text-white font-bold outline-none"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-[11px] font-bold text-green-500 uppercase mb-1">Stop Win ($)</label>
+                                     <input type="number" id="cfg-stopwin" class="w-full bg-[#0f1114] border border-green-500/30 rounded-md px-3 py-2 text-sm text-white outline-none"></div>
+                                <div><label class="block text-[11px] font-bold text-red-500 uppercase mb-1">Stop Loss ($)</label>
+                                     <input type="number" id="cfg-stoploss" class="w-full bg-[#0f1114] border border-red-500/30 rounded-md px-3 py-2 text-sm text-white outline-none"></div>
+                            </div>
+                            <button onclick="saveConfigs()" class="w-full bg-[#2d3138] hover:bg-[#3d434d] text-white font-semibold py-2.5 rounded-md text-sm transition mt-2">Gravar Limites</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= ETH TAB ================= -->
+        <div id="tab-eth" class="hidden">
+            <div id="altcoin-panel-ETH" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="poly-panel flex flex-col h-[500px]">
+                    <div class="px-5 py-4 border-b border-[#2d3138] flex justify-between items-center">
+                        <h2 class="text-sm font-semibold">Terminal Lógico ETH</h2>
+                        <span class="text-[11px] font-mono" id="eth-signal-badge">—</span>
+                    </div>
+                    <div id="eth-logs" class="p-5 font-mono text-[11px] overflow-y-auto space-y-1 flex-1">
+                        Aguardando análise ETH...
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="poly-panel p-5 grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MODEL UP</span>
+                            <span id="eth-model-up" class="block text-3xl font-black mt-2 text-green-400">--%</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MODEL DOWN</span>
+                            <span id="eth-model-down" class="block text-3xl font-black mt-2 text-red-500">--%</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MKT UP</span>
+                            <span id="eth-mkt-up" class="block text-xl font-black mt-2 text-gray-300">--¢</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MKT DOWN</span>
+                            <span id="eth-mkt-down" class="block text-xl font-black mt-2 text-gray-300">--¢</span>
+                        </div>
+                        <div class="col-span-2 pt-3 border-t border-[#2d3138]">
+                            <span class="text-[11px] text-gray-400 uppercase font-bold block mb-2">DECISÃO</span>
+                            <span id="eth-signal" class="px-4 py-1.5 rounded-md bg-[#0f1114] border border-[#2d3138] text-gray-300 font-mono text-sm">NO_TRADE</span>
+                        </div>
+                    </div>
+                    <div class="poly-panel p-5 grid grid-cols-3 gap-3 text-center">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Saldo</p>
+                            <p id="eth-balance" class="text-lg font-black mt-1">$0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Trades</p>
+                            <p id="eth-trades" class="text-lg font-black mt-1">0</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Win Rate</p>
+                            <p id="eth-wr" class="text-lg font-black mt-1">—</p>
+                        </div>
+                    </div>
+                    <div class="poly-panel p-5">
+                        <p class="text-xs text-gray-400 uppercase font-bold mb-3">Regime / Indicadores</p>
+                        <div class="space-y-2 text-sm font-mono" id="eth-indicators">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SOL TAB ================= -->
+        <div id="tab-sol" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="poly-panel flex flex-col h-[500px]">
+                    <div class="px-5 py-4 border-b border-[#2d3138] flex justify-between items-center">
+                        <h2 class="text-sm font-semibold">Terminal Lógico SOL</h2>
+                        <span class="text-[11px] font-mono" id="sol-signal-badge">—</span>
+                    </div>
+                    <div id="sol-logs" class="p-5 font-mono text-[11px] overflow-y-auto space-y-1 flex-1">
+                        Aguardando análise SOL...
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="poly-panel p-5 grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MODEL UP</span>
+                            <span id="sol-model-up" class="block text-3xl font-black mt-2 text-green-400">--%</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MODEL DOWN</span>
+                            <span id="sol-model-down" class="block text-3xl font-black mt-2 text-red-500">--%</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MKT UP</span>
+                            <span id="sol-mkt-up" class="block text-xl font-black mt-2 text-gray-300">--¢</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MKT DOWN</span>
+                            <span id="sol-mkt-down" class="block text-xl font-black mt-2 text-gray-300">--¢</span>
+                        </div>
+                        <div class="col-span-2 pt-3 border-t border-[#2d3138]">
+                            <span class="text-[11px] text-gray-400 uppercase font-bold block mb-2">DECISÃO</span>
+                            <span id="sol-signal" class="px-4 py-1.5 rounded-md bg-[#0f1114] border border-[#2d3138] text-gray-300 font-mono text-sm">NO_TRADE</span>
+                        </div>
+                    </div>
+                    <div class="poly-panel p-5 grid grid-cols-3 gap-3 text-center">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Saldo</p>
+                            <p id="sol-balance" class="text-lg font-black mt-1">$0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Trades</p>
+                            <p id="sol-trades" class="text-lg font-black mt-1">0</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Win Rate</p>
+                            <p id="sol-wr" class="text-lg font-black mt-1">—</p>
+                        </div>
+                    </div>
+                    <div class="poly-panel p-5">
+                        <p class="text-xs text-gray-400 uppercase font-bold mb-3">Regime / Indicadores</p>
+                        <div class="space-y-2 text-sm font-mono" id="sol-indicators">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= XRP TAB ================= -->
+        <div id="tab-xrp" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="poly-panel flex flex-col h-[500px]">
+                    <div class="px-5 py-4 border-b border-[#2d3138] flex justify-between items-center">
+                        <h2 class="text-sm font-semibold">Terminal Lógico XRP</h2>
+                        <span class="text-[11px] font-mono" id="xrp-signal-badge">—</span>
+                    </div>
+                    <div id="xrp-logs" class="p-5 font-mono text-[11px] overflow-y-auto space-y-1 flex-1">
+                        Aguardando análise XRP...
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="poly-panel p-5 grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MODEL UP</span>
+                            <span id="xrp-model-up" class="block text-3xl font-black mt-2 text-green-400">--%</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MODEL DOWN</span>
+                            <span id="xrp-model-down" class="block text-3xl font-black mt-2 text-red-500">--%</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MKT UP</span>
+                            <span id="xrp-mkt-up" class="block text-xl font-black mt-2 text-gray-300">--¢</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase font-bold">MKT DOWN</span>
+                            <span id="xrp-mkt-down" class="block text-xl font-black mt-2 text-gray-300">--¢</span>
+                        </div>
+                        <div class="col-span-2 pt-3 border-t border-[#2d3138]">
+                            <span class="text-[11px] text-gray-400 uppercase font-bold block mb-2">DECISÃO</span>
+                            <span id="xrp-signal" class="px-4 py-1.5 rounded-md bg-[#0f1114] border border-[#2d3138] text-gray-300 font-mono text-sm">NO_TRADE</span>
+                        </div>
+                    </div>
+                    <div class="poly-panel p-5 grid grid-cols-3 gap-3 text-center">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Saldo</p>
+                            <p id="xrp-balance" class="text-lg font-black mt-1">$0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Trades</p>
+                            <p id="xrp-trades" class="text-lg font-black mt-1">0</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Win Rate</p>
+                            <p id="xrp-wr" class="text-lg font-black mt-1">—</p>
+                        </div>
+                    </div>
+                    <div class="poly-panel p-5">
+                        <p class="text-xs text-gray-400 uppercase font-bold mb-3">Regime / Indicadores</p>
+                        <div class="space-y-2 text-sm font-mono" id="xrp-indicators">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= WEATHER TAB ================= -->
+        <div id="tab-weather" class="hidden">
+            <!-- Weather Stats Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="poly-panel p-6">
+                    <h2 class="text-sm font-semibold flex justify-between items-center mb-6 text-[#858a93]">
+                        Theta Gang: Multi-Oracle Scanner
+                        <span id="weather-status" class="px-2 py-0.5 text-[10px] font-bold tracking-widest text-blue-400 bg-blue-500/10 rounded">PULSING</span>
+                    </h2>
+                    <div class="w-full bg-[#0f1114] rounded-lg h-2 mb-6 overflow-hidden">
+                        <div class="h-full bg-blue-500 w-full animate-pulse origin-left"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-[#0f1114] p-4 rounded-xl border border-[#2d3138]">
+                            <span class="text-[11px] text-gray-500 font-bold uppercase tracking-wider block">Mercados</span>
+                            <span id="w-markets" class="text-3xl font-black mt-1 block">0</span>
+                        </div>
+                        <div class="bg-[#0f1114] p-4 rounded-xl border border-green-500/30">
+                            <span class="text-[11px] text-green-500/70 font-bold uppercase tracking-wider block">Sinais NO</span>
+                            <span id="w-matches" class="text-3xl font-black mt-1 block text-green-400">0</span>
+                        </div>
+                        <div class="bg-[#0f1114] p-4 rounded-xl border border-blue-500/30">
+                            <span class="text-[11px] text-blue-400/70 font-bold uppercase tracking-wider block">Saldo</span>
+                            <span id="w-balance" class="text-3xl font-black mt-1 block text-blue-300">$0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weather Scan Logs -->
+                <div class="poly-panel flex flex-col h-[360px]">
+                    <div class="px-5 py-4 border-b border-[#2d3138]">
+                        <h2 class="text-sm font-semibold text-[#858a93]">Análise Meteorológica (Scanner Logs)</h2>
+                    </div>
+                    <div id="w-scanlogs" class="p-5 font-mono text-[11px] overflow-y-auto space-y-2 flex-1">
+                        <div class="text-gray-500">Varrendo oráculos globais...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Active Positions -->
+            <div class="poly-panel overflow-hidden">
+                <div class="px-5 py-4 border-b border-[#2d3138] flex justify-between items-center">
+                    <h2 class="text-sm font-semibold">Posições Abertas — Temperatura</h2>
+                    <span id="w-active-count" class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-400">0 ativas</span>
+                </div>
+                <div id="w-positions-panel">
+                    <div class="py-10 text-center text-gray-500 italic text-sm">Nenhuma posição de temperatura aberta.</div>
+                </div>
+            </div>
+
+            <!-- Weather Engine Logs -->
+            <div class="poly-panel mt-6 flex flex-col h-[300px]">
+                <div class="px-5 py-4 border-b border-[#2d3138]">
+                    <h2 class="text-sm font-semibold text-[#858a93]">Engine Logs (Execução)</h2>
+                </div>
+                <div id="w-engine-logs" class="p-5 font-mono text-[11px] overflow-y-auto space-y-1 flex-1">
+                    <div class="text-gray-500">Aguardando varreduras...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SYSTEM LOGS TAB ================= -->
+        <div id="tab-logs" class="hidden">
+            <div class="poly-panel p-6 h-[700px] flex flex-col">
+                <div class="flex justify-between items-center mb-4 border-b border-[#2d3138] pb-4">
+                    <h2 class="text-sm font-bold text-gray-300">Terminal do Sistema (Log Global e Erros)</h2>
+                    <span class="px-3 py-1 bg-gray-900 rounded text-xs font-mono text-gray-500">Watching Node.js Events...</span>
+                </div>
+                <div id="global-sys-logs" class="flex-1 font-mono text-xs overflow-y-auto space-y-1 bg-black p-4 rounded border border-gray-800">
+                    <div class="text-green-500">> Sistema Iniciado. Aguardando pacotes de rede...</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MAIN APP SCRIPT -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active', 'text-white', 'border-white');
+                b.classList.add('border-transparent');
+            });
+            document.querySelectorAll('div[id^="tab-"]').forEach(t => t.classList.add('hidden'));
+
+            event.target.classList.add('active', 'text-white', 'border-white');
+            event.target.classList.remove('border-transparent');
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+        }
+
+        // --- PNL CHART ---
+        const ctx = document.getElementById('pnlChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 120);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+        gradient.addColorStop(1, 'rgba(168, 85, 247, 0.05)');
+        const pnlChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Start', 'Now'],
+                datasets: [{ data: [0, 0], borderColor: '#3b82f6', backgroundColor: gradient, borderWidth: 2, fill: true, tension: 0.4, pointRadius: 0 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
+        });
+
+        let ws;
+        const ui = {
+            statusBadge:    document.getElementById('connection-status'),
+            generalBalance: document.getElementById('gen-balance'),
+            engineBtn:      document.getElementById('toggle-engine-btn'),
+            statPos:        document.getElementById('stat-positions-value'),
+            statWin:        document.getElementById('stat-biggest-win'),
+            statPred:       document.getElementById('stat-predictions'),
+            posTbody:       document.getElementById('positions-tbody'),
+            genLogs:        document.getElementById('gen-logs'),
+            globalLogs:     document.getElementById('global-sys-logs'),
+            cfgTime:        document.getElementById('cfg-timeframe'),
+            cfgWin:         document.getElementById('cfg-stopwin'),
+            cfgLoss:        document.getElementById('cfg-stoploss'),
+            cfgStake:       document.getElementById('cfg-stake'),
+            wScanLogs:      document.getElementById('w-scanlogs'),
+            wMarkets:       document.getElementById('w-markets'),
+            wMatches:       document.getElementById('w-matches'),
+            wBalance:       document.getElementById('w-balance'),
+            wPositions:     document.getElementById('w-positions-panel'),
+            wActiveCount:   document.getElementById('w-active-count'),
+            wEngineLogs:    document.getElementById('w-engine-logs')
+        };
+
+        let _activePosCount = 0;
+        let _activePositionsCache = [];
+        let _closedPositionsCache = [];
+        let _currentTableTab = 'active';
+        let lastTotalBalance = 0;
+
+        // Per-coin state cache for positions table
+        const _altState = { ETH: null, SOL: null, XRP: null };
+
+        function switchTableTab(tab) {
+            _currentTableTab = tab;
+            ['active','closed'].forEach(t => {
+                const el = document.getElementById('tab-' + t);
+                if (t === tab) {
+                    el.classList.add('border-white','text-white');
+                    el.classList.remove('text-gray-400','border-transparent');
+                } else {
+                    el.classList.remove('border-white','text-white');
+                    el.classList.add('text-gray-400','border-transparent');
+                }
+            });
+            renderPositionsTable();
+        }
+
+        function toggleEngine() {
+            if(ws && ws.readyState === 1) ws.send(JSON.stringify({ action: "TOGGLE_ENGINE" }));
+        }
+
+        function saveConfigs() {
+            if(ws && ws.readyState === 1) ws.send(JSON.stringify({
+                action: "UPDATE_CONFIG",
+                timeframe: ui.cfgTime.value,
+                stopWin: ui.cfgWin.value,
+                stopLoss: ui.cfgLoss.value,
+                stake: ui.cfgStake.value
+            }));
+        }
+
+        function pct(v) { return v != null ? (v*100).toFixed(1) + '%' : '--'; }
+        function fmtBal(v) {
+            const n = Number(v) || 0;
+            const sign = n >= 0 ? '+' : '';
+            const cls = n > 0 ? 'text-green-400' : n < 0 ? 'text-red-400' : 'text-white';
+            return `<span class="${cls}">${sign}$${n.toFixed(2)}</span>`;
+        }
+        function fmtSignal(action, side) {
+            if (action === 'ENTER') return `<span class="text-green-400 font-bold">▶ ENTER ${side||''}</span>`;
+            return `<span class="text-gray-500">NO TRADE</span>`;
+        }
+
+        function renderPositionsTable() {
+            const positions = _currentTableTab === 'active' ? _activePositionsCache : _closedPositionsCache;
+            const isClosed = _currentTableTab === 'closed';
+
+            if (!positions || positions.length === 0) {
+                const msg = isClosed ? "Nenhum histórico de posições finalizadas." : "Nenhuma aposta em curso. Aguardando gatilho do robô...";
+                ui.posTbody.innerHTML = `<tr><td colspan="4" class="py-12 text-center text-gray-500 italic">${msg}</td></tr>`;
+                return;
+            }
+
+            ui.posTbody.innerHTML = positions.map(p => {
+                const clr = p.side === "UP" ? "text-green-400" : "text-red-400";
+                const coinBadge = p.coin ? `<span class="coin-tag bg-gray-700 text-gray-300 mr-2">${p.coin}</span>` : '';
+                const valueHtml = isClosed
+                    ? `<span class="font-bold px-2 py-0.5 rounded text-xs ${p.pnl >= 0 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">$${(p.pnl||0).toFixed(2)}</span>`
+                    : `<span class="font-bold text-white">$${(p.shares * p.currentPrice).toFixed(2)}</span>`;
+                return `
+                <tr class="hover:bg-[#1a1e23] transition border-b border-[#2d3138]">
+                    <td class="py-4 px-4 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded shrink-0 bg-gray-800 border border-gray-700 flex items-center justify-center">
+                            <span class="text-[10px]">L2</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-white line-clamp-1 max-w-[300px]">${coinBadge}${p.market||'—'}</p>
+                            <p class="text-xs ${clr} font-bold mt-0.5">${p.side||''} ${((p.entryPrice||0)*100).toFixed(1)}¢ <span class="text-gray-500 font-normal ml-2">${(p.shares||0).toFixed(1)} shares</span></p>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4 font-semibold text-gray-300">${((p.entryPrice||0)*100).toFixed(1)}¢</td>
+                    <td class="py-4 px-4 font-semibold ${isClosed?'text-gray-500 line-through':'text-white'}">${isClosed?'SETTLED':((p.currentPrice||0)*100).toFixed(1)+'¢'}</td>
+                    <td class="py-4 px-4 text-right">${valueHtml}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderLogs(container, logs) {
+            if (!logs || !logs.length) return;
+            container.innerHTML = logs.map(lg => {
+                let cl = 'text-gray-400';
+                if (lg.includes('LUCRO') || lg.includes('Lucro')) cl = 'text-green-400 font-bold';
+                else if (lg.includes('SIMULADA') || lg.includes('ENTRADA')) cl = 'text-purple-400 font-bold';
+                else if (lg.includes('ERRO') || lg.includes('⚠️')) cl = 'text-red-400 font-bold';
+                else if (lg.includes('STOP LOSS')) cl = 'text-red-500 font-bold';
+                else if (lg.includes('STOP WIN')) cl = 'text-green-500 font-bold';
+                return `<div class="${cl} py-0.5 border-b border-[#2d3138]/20">> ${lg}</div>`;
+            }).join('');
+        }
+
+        function updateAltCoinTab(key, data) {
+            if (!data) return;
+            const { state, snapshot } = data;
+            const k = key.toLowerCase();
+
+            // Balance + stats
+            const bal = state.virtualBalance || 0;
+            const stats = state.stats || {};
+            const wr = stats.predictions > 0 ? ((stats.wins||0)/stats.predictions*100).toFixed(0)+'%' : '—';
+            document.getElementById(`${k}-balance`).innerHTML = fmtBal(bal);
+            document.getElementById(`${k}-trades`).textContent = stats.predictions || 0;
+            document.getElementById(`${k}-wr`).textContent = wr;
+
+            // Signal
+            if (snapshot) {
+                const sigEl = document.getElementById(`${k}-signal`);
+                const sigBadge = document.getElementById(`${k}-signal-badge`);
+                if (snapshot.action === 'ENTER') {
+                    sigEl.textContent = `ENTER ${snapshot.side||''}`;
+                    sigEl.className = 'px-4 py-1.5 rounded-md bg-blue-600 border border-blue-500 text-white font-bold text-sm animate-pulse';
+                    sigBadge.innerHTML = `<span class="text-green-400 font-bold">▶ ENTER ${snapshot.side||''}</span>`;
+                } else {
+                    sigEl.textContent = 'NO_TRADE';
+                    sigEl.className = 'px-4 py-1.5 rounded-md bg-[#0f1114] border border-[#2d3138] text-gray-300 font-mono text-sm';
+                    sigBadge.innerHTML = `<span class="text-gray-500">NO TRADE</span>`;
+                }
+
+                const mu = snapshot.adjustedUp;
+                const md = snapshot.adjustedDown;
+                document.getElementById(`${k}-model-up`).textContent = mu != null ? pct(mu) : '--%';
+                document.getElementById(`${k}-model-down`).textContent = md != null ? pct(md) : '--%';
+                document.getElementById(`${k}-mkt-up`).textContent = snapshot.marketUp != null ? (snapshot.marketUp*100).toFixed(1)+'¢' : '--¢';
+                document.getElementById(`${k}-mkt-down`).textContent = snapshot.marketDown != null ? (snapshot.marketDown*100).toFixed(1)+'¢' : '--¢';
+
+                const indEl = document.getElementById(`${k}-indicators`);
+                if (snapshot.regime) {
+                    const polyStatus = snapshot.marketFound
+                        ? `<div class="text-gray-300">Polymarket: <span class="text-green-400">✓ Mercado ativo</span></div>`
+                        : `<div class="text-yellow-500">⚠️ Sem mercado ativo no Polymarket</div>`;
+                    indEl.innerHTML = [
+                        `<div class="text-gray-300">Regime: <span class="text-white font-bold">${snapshot.regime}</span></div>`,
+                        snapshot.rsiNow != null ? `<div class="text-gray-300">RSI: <span class="text-white">${Number(snapshot.rsiNow).toFixed(1)}</span></div>` : '',
+                        snapshot.edgeUp != null ? `<div class="text-gray-300">Edge UP: <span class="text-green-400">${Number(snapshot.edgeUp).toFixed(4)}</span></div>` : '',
+                        snapshot.edgeDown != null ? `<div class="text-gray-300">Edge DOWN: <span class="text-red-400">${Number(snapshot.edgeDown).toFixed(4)}</span></div>` : '',
+                        polyStatus
+                    ].join('');
+                }
+            }
+
+            // Logs
+            const logsEl = document.getElementById(`${k}-logs`);
+            if (logsEl) renderLogs(logsEl, state.logs);
+
+            _altState[key] = state;
+        }
+
+        function updateOverview(btcEngine, altCoins, weatherEngine) {
+            const coins = [
+                { key: 'BTC',     state: btcEngine,                          snap: null },
+                { key: 'ETH',     state: altCoins?.ETH?.state,               snap: altCoins?.ETH?.snapshot },
+                { key: 'SOL',     state: altCoins?.SOL?.state,               snap: altCoins?.SOL?.snapshot },
+                { key: 'XRP',     state: altCoins?.XRP?.state,               snap: altCoins?.XRP?.snapshot },
+                { key: 'WEATHER', state: weatherEngine,                      snap: null }
+            ];
+
+            let total = 0;
+            let totalTrades = 0;
+            let totalPosValue = 0;
+            let biggestWin = 0;
+
+            for (const { key, state, snap } of coins) {
+                if (!state) continue;
+                const k = key.toLowerCase();
+                const bal = state.virtualBalance || 0;
+                total += bal;
+                const trades = state.stats?.predictions || 0;
+                totalTrades += trades;
+                totalPosValue += state.stats?.positionsValue || 0;
+                biggestWin = Math.max(biggestWin, state.stats?.biggestWin || 0);
+
+                const balEl = document.getElementById(`ov-${k}-bal`);
+                const trEl  = document.getElementById(`ov-${k}-trades`);
+                const sigEl = document.getElementById(`ov-${k}-signal`);
+                if (balEl) balEl.innerHTML = fmtBal(bal);
+                if (trEl)  trEl.textContent = trades + ' trades';
+                if (sigEl) {
+                    if (snap?.action === 'ENTER') {
+                        sigEl.innerHTML = `<span class="text-green-400">▶ ENTER ${snap.side||''}</span>`;
+                    } else if (state.activePositions?.length > 0) {
+                        sigEl.innerHTML = `<span class="text-blue-400">● ${state.activePositions.length} pos aberta</span>`;
+                    } else {
+                        sigEl.innerHTML = `<span class="text-gray-600">—</span>`;
+                    }
+                }
+            }
+
+            // Total balance
+            const totalEl = document.getElementById('gen-balance');
+            totalEl.innerHTML = fmtBal(total);
+
+            ui.statPos.innerHTML = `$${totalPosValue.toFixed(2)}`;
+            ui.statWin.innerHTML = `$${biggestWin.toFixed(2)}`;
+            ui.statPred.innerHTML = totalTrades;
+
+            // Chart update (total balance)
+            if (Math.abs(total - lastTotalBalance) > 0.001) {
+                lastTotalBalance = total;
+                pnlChart.data.labels.push('');
+                pnlChart.data.datasets[0].data.push(total);
+                if (pnlChart.data.labels.length > 50) {
+                    pnlChart.data.labels.shift();
+                    pnlChart.data.datasets[0].data.shift();
+                }
+                pnlChart.update('none');
+            }
+
+            // Positions table (all engines merged)
+            const allActive = [
+                ...(btcEngine?.activePositions || []).map(p => ({...p, coin:'BTC'})),
+                ...(altCoins?.ETH?.state?.activePositions || []).map(p => ({...p, coin:'ETH'})),
+                ...(altCoins?.SOL?.state?.activePositions || []).map(p => ({...p, coin:'SOL'})),
+                ...(altCoins?.XRP?.state?.activePositions || []).map(p => ({...p, coin:'XRP'})),
+                ...(weatherEngine?.activePositions || []).map(p => ({...p, coin:'WEATHER'}))
+            ];
+            const allClosed = [
+                ...(btcEngine?.closedPositions || []).map(p => ({...p, coin:'BTC'})),
+                ...(altCoins?.ETH?.state?.closedPositions || []).map(p => ({...p, coin:'ETH'})),
+                ...(altCoins?.SOL?.state?.closedPositions || []).map(p => ({...p, coin:'SOL'})),
+                ...(altCoins?.XRP?.state?.closedPositions || []).map(p => ({...p, coin:'XRP'})),
+                ...(weatherEngine?.closedPositions || []).map(p => ({...p, coin:'WEATHER'}))
+            ].sort((a,b) => (b.closedAt||b.time||0)-(a.closedAt||a.time||0));
+
+            const prevCount = _activePosCount;
+            _activePositionsCache = allActive;
+            _closedPositionsCache = allClosed;
+            if (allActive.length !== prevCount) {
+                _activePosCount = allActive.length;
+                renderPositionsTable();
+            }
+        }
+
+        function connectWs() {
+            ws = new WebSocket(`ws://${window.location.host}`);
+            ws.onopen = () => {
+                ui.statusBadge.textContent = 'ONLINE';
+                ui.statusBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-400';
+            };
+
+            let firstRender = true;
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+
+                if (data.config && firstRender) {
+                    ui.cfgTime.value  = data.config.timeframe;
+                    ui.cfgWin.value   = data.config.stopWin;
+                    ui.cfgLoss.value  = data.config.stopLoss;
+                    ui.cfgStake.value = data.config.stake;
+                    firstRender = false;
+                }
+
+                // BTC signals
+                if (data.modelUp  != null) document.getElementById('model-up').textContent  = pct(data.modelUp);
+                if (data.modelDown != null) document.getElementById('model-down').textContent = pct(data.modelDown);
+
+                if (data.signal) {
+                    const el = document.getElementById('signal');
+                    el.textContent = data.signal;
+                    el.className = data.signal.includes('ENTER')
+                        ? 'px-4 py-1.5 rounded-md bg-blue-600 border border-blue-500 text-white font-bold text-sm tracking-widest animate-pulse'
+                        : 'px-4 py-1.5 rounded-md bg-[#0f1114] border border-[#2d3138] text-gray-300 font-mono text-sm tracking-widest';
+                }
+
+                if (data.engine) {
+                    const run = data.engine.status === 'RUNNING';
+                    ui.engineBtn.textContent  = run ? 'Pausar Automação' : 'Iniciar Automação';
+                    ui.engineBtn.className    = run ? 'poly-btn bg-green-500 text-black px-6' : 'poly-btn bg-white px-6';
+                    renderLogs(ui.genLogs, data.engine.logs);
+                }
+
+                // Alt coins tabs
+                if (data.altCoins) {
+                    for (const key of ['ETH','SOL','XRP']) {
+                        if (data.altCoins[key]) updateAltCoinTab(key, data.altCoins[key]);
+                    }
+                }
+
+                // Overview (always updated)
+                updateOverview(data.engine, data.altCoins, data.weatherEngine);
+
+                // Global logs mirror
+                if (data.engine?.logs) {
+                    renderLogs(ui.globalLogs, [
+                        ...(data.engine.logs || []),
+                        ...(data.weatherEngine?.logs || [])
+                    ]);
+                }
+
+                // Weather tab
+                if (data.weather) {
+                    ui.wMarkets.textContent = data.weather.marketsMonitored || 0;
+                    ui.wMatches.textContent = (data.weather.matchesFound || []).length;
+
+                    if (data.weather.scanLogs?.length > 0) {
+                        ui.wScanLogs.innerHTML = data.weather.scanLogs.map(lg => {
+                            let c = 'text-gray-400';
+                            if (lg.includes('IGNORADO')) c = 'text-red-400/80';
+                            if (lg.includes('MATCH'))    c = 'text-green-400 font-bold';
+                            return `<div class="${c} py-0.5 mb-0.5">[WEATHER] ${lg}</div>`;
+                        }).join('');
+                    }
+                }
+
+                if (data.weatherEngine) {
+                    const we = data.weatherEngine;
+                    const wbal = we.virtualBalance || 0;
+                    ui.wBalance.innerHTML = fmtBal(wbal);
+
+                    // Active positions
+                    const wPos = we.activePositions || [];
+                    ui.wActiveCount.textContent = wPos.length + ' ativas';
+                    if (wPos.length === 0) {
+                        ui.wPositions.innerHTML = '<div class="py-10 text-center text-gray-500 italic text-sm">Nenhuma posição de temperatura aberta.</div>';
+                    } else {
+                        ui.wPositions.innerHTML = `<table class="w-full text-sm">
+                            <thead class="text-[10px] text-gray-400 uppercase border-b border-[#2d3138] bg-[#14171a]">
+                                <tr>
+                                    <th class="py-2 px-4 text-left">Cidade / Mercado</th>
+                                    <th class="py-2 px-4">Data</th>
+                                    <th class="py-2 px-4">Threshold</th>
+                                    <th class="py-2 px-4">Entrada</th>
+                                    <th class="py-2 px-4 text-right">Stake</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#2d3138]">
+                                ${wPos.map(p => `<tr class="hover:bg-[#1a1e23]">
+                                    <td class="py-3 px-4 font-semibold text-white">${p.city||p.market||'—'}</td>
+                                    <td class="py-3 px-4 text-center text-gray-300">${p.dateStr||'—'}</td>
+                                    <td class="py-3 px-4 text-center text-gray-300">${p.targetC!=null?p.targetC.toFixed(0)+'°C':'—'}</td>
+                                    <td class="py-3 px-4 text-center text-blue-300">${((p.entryPrice||0)*100).toFixed(1)}¢</td>
+                                    <td class="py-3 px-4 text-right text-white font-bold">$${p.stake||0}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>`;
+                    }
+
+                    // Engine logs
+                    renderLogs(ui.wEngineLogs, we.logs);
+                }
+            };
+
+            ws.onclose = () => {
+                ui.statusBadge.textContent = 'OFFLINE';
+                ui.statusBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400';
+                setTimeout(connectWs, 2000);
+            };
+        }
+        connectWs();
+    </script>
+</body>
+</html>

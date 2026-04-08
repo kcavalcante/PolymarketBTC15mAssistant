@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E '\\\\.\\(js|json|env\\)$')",
+      "Bash(curl -s \"https://gamma-api.polymarket.com/events?active=true&closed=false&limit=100\")",
+      "Bash(curl -s \"https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=200\")",
+      "Bash(python3:*)",
+      "Read(//tmp/**)",
+      "Bash(ls -lh *.json)",
+      "Bash(node --input-type=module --eval \"import\\('./src/index.js'\\).then\\(\\(\\) => setTimeout\\(\\(\\) => process.exit\\(0\\), 3000\\)\\).catch\\(e => { console.error\\(e.message\\); process.exit\\(1\\); }\\)\")",
+      "Bash(node:*)"
+    ]
+  }
+}

@@ -25,6 +25,80 @@ import fs from "node:fs";
 import path from "node:path";
 import readline from "node:readline";
 import { applyGlobalProxyFromEnv } from "./net/proxy.js";
+import express from "express";
+import { WebSocketServer } from "ws";
+import { engineState, logEvent, evaluateSignals, setExecutorPortfolio } from "./engines/executor.js";
+import { runWeatherConsensusSweep, weatherState, weatherEngineState, executeWeatherSignals } from "./engines/weatherEngine.js";
+import { COINS } from "./coins.js";
+import { createCoinEngine } from "./engines/coinEngine.js";
+import { fetchPolymarketSnapshotForCoin } from "./data/coinMarketResolver.js";
+import { loadPortfolio, loadEngineState, recordClosedTrade, appendTradeLog } from "./data/persistence.js";
+
+const app = express();
+app.use(express.static('public'));
+const server = app.listen(3000, () => {
+  // Silent boot for the dashboard on port 3000
+});
+const wss = new WebSocketServer({ server });
+
+// ─── Persistência + engines multi-moeda ──────────────────────────────────────
+const portfolio = loadPortfolio();
+
+// Injetar portfolio no executor BTC para persistência
+setExecutorPortfolio(portfolio);
+
+// BTC usa executor.js (legacy); ETH/SOL/XRP usam coinEngine factory
+// Restaurar saldo BTC do portfolio
+const btcSaved = loadEngineState(portfolio, "BTC");
+if (btcSaved.virtualBalance !== 0) engineState.virtualBalance = btcSaved.virtualBalance;
+if (btcSaved.stats) Object.assign(engineState.stats, btcSaved.stats);
+
+const altEngines = {}; // ETH, SOL, XRP
+for (const coin of COINS.filter(c => c.key !== "BTC")) {
+    altEngines[coin.key] = createCoinEngine(coin.key, portfolio);
+}
+
+// ─── Estado de tabs ───────────────────────────────────────────────────────────
+const TABS = ["BTC", "ETH", "SOL", "XRP", "WEATHER", "OVERVIEW"];
+let activeTab = "BTC";
+
+// Capturas de snapshots das moedas alternativas (atualizadas em background)
+const altSnapshots = { ETH: null, SOL: null, XRP: null };
+
+// ─── Keyboard tab switching ───────────────────────────────────────────────────
+if (process.stdin.isTTY) {
+    readline.emitKeypressEvents(process.stdin);
+    process.stdin.setRawMode(true);
+    process.stdin.on("keypress", (str, key) => {
+        if (key?.ctrl && key?.name === "c") process.exit();
+        const idx = parseInt(str, 10) - 1;
+        if (idx >= 0 && idx < TABS.length) activeTab = TABS[idx];
+    });
+}
+
+wss.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    try {
+      const p = JSON.parse(message);
+      if (p.action === "UPDATE_CONFIG") {
+         if(p.timeframe) CONFIG.candleWindowMinutes = Number(p.timeframe);
+         if(p.stopWin) CONFIG.stopWin = Number(p.stopWin);
+         if(p.stopLoss) CONFIG.stopLoss = Number(p.stopLoss);
+         if(p.stake) CONFIG.stakeAmount = Number(p.stake);
+         logEvent("⚙️ Setup atualizado via Dashboard!");
+      } else if (p.action === "TOGGLE_ENGINE") {
+         engineState.status = engineState.status === "RUNNING" ? "STOPPED" : "RUNNING";
+         logEvent(`Status do Motor alterado: ${engineState.status}`);
+      }
+    } catch(e) {}
+  });
+});
+
+function broadcastData(data) {
+  wss.clients.forEach(client => {
+    if (client.readyState === 1) client.send(JSON.stringify(data));
+  });
+}
 
 function countVwapCrosses(closes, vwapSeries, lookback) {
   if (closes.length < lookback || vwapSeries.length < lookback) return null;
@@ -395,10 +469,339 @@ async function fetchPolymarketSnapshot() {
   };
 }
 
+// ─── Tab bar ─────────────────────────────────────────────────────────────────
+function renderTabBar() {
+    const w   = screenWidth();
+    const bar = TABS.map((t, i) => {
+        const num    = i + 1;
+        const active = t === activeTab;
+        return active
+            ? `${ANSI.white}[${num}:${t}]${ANSI.reset}`
+            : `${ANSI.gray} ${num}:${t} ${ANSI.reset}`;
+    }).join("  ");
+    return `${bar}\n${sepLine()}`;
+}
+
+// ─── Render moeda alternativa (ETH/SOL/XRP) ──────────────────────────────────
+function renderAltCoinTab(coinKey, snap, eng) {
+    const coin  = COINS.find(c => c.key === coinKey);
+    const label = coin?.label ?? coinKey;
+    const lines = [renderTabBar(), ""];
+
+    if (!snap) {
+        lines.push(`  ${ANSI.yellow}⏳ Aguardando primeiro tick de ${label}...${ANSI.reset}`);
+        renderScreen(lines.join("\n") + "\n");
+        return;
+    }
+
+    if (snap.error) {
+        lines.push(`  ${ANSI.red}❌ Erro em ${label}: ${snap.error}${ANSI.reset}`);
+        renderScreen(lines.join("\n") + "\n");
+        return;
+    }
+
+    const price    = snap.spotPrice ?? snap.lastPrice;
+    const priceStr = price !== null ? `$${formatNumber(price, coin?.decimals ?? 2)}` : "-";
+    const mUp      = snap.marketUp   !== null ? `${(snap.marketUp   * 100).toFixed(1)}¢` : "-";
+    const mDown    = snap.marketDown !== null ? `${(snap.marketDown * 100).toFixed(1)}¢` : "-";
+    const sigColor = snap.action === "ENTER" ? ANSI.green : ANSI.gray;
+    const sigStr   = snap.action === "ENTER"
+        ? `${ANSI.green}▶ ENTER ${snap.side} (${snap.phase} | ${snap.strength})${ANSI.reset}`
+        : `${ANSI.gray}NO TRADE (${snap.phase ?? "-"})${ANSI.reset}`;
+
+    const bal    = eng.state.virtualBalance;
+    const balCol = bal > 0 ? ANSI.green : bal < 0 ? ANSI.red : ANSI.gray;
+    const stats  = eng.state.stats;
+    const wr     = stats.predictions > 0 ? ((stats.wins / stats.predictions) * 100).toFixed(0) : "-";
+
+    lines.push(
+        kv(`${label} (${coinKey}):`, `${ANSI.white}${priceStr}${ANSI.reset}`),
+        kv("Sinal:", sigStr),
+        kv("Polymarket:", snap.marketFound === false
+            ? `${ANSI.yellow}Sem mercado ativo${ANSI.reset}`
+            : `${ANSI.green}↑ UP${ANSI.reset} ${mUp}  |  ${ANSI.red}↓ DOWN${ANSI.reset} ${mDown}`),
+        "",
+        sepLine(), "",
+        kv("Regime:", snap.regime ?? "-"),
+        kv("RSI:", snap.rsiNow !== null ? formatNumber(snap.rsiNow, 1) : "-"),
+        kv("VWAP dist:", snap.vwapDist !== null ? formatPct(snap.vwapDist, 2) : "-"),
+        kv("Model UP:", snap.adjustedUp  !== null ? formatProbPct(snap.adjustedUp,  1) : "-"),
+        kv("Model DOWN:", snap.adjustedDown !== null ? formatProbPct(snap.adjustedDown, 1) : "-"),
+        kv("Edge UP:", snap.edgeUp   !== null ? formatNumber(snap.edgeUp,  4) : "-"),
+        kv("Edge DOWN:", snap.edgeDown !== null ? formatNumber(snap.edgeDown, 4) : "-"),
+        "",
+        sepLine(), "",
+        kv("Saldo virtual:", `${balCol}$${bal.toFixed(2)}${ANSI.reset}`),
+        kv("Trades:", `${stats.predictions} (${stats.wins}W / ${stats.losses}L) — WR: ${wr}%`),
+        "",
+        sepLine(), "",
+        section("► LOGS"),
+        ...eng.state.logs.slice(0, 10).map(l => `  ${ANSI.dim}${l}${ANSI.reset}`),
+        "",
+        centerText(`${ANSI.dim}${ANSI.gray}created by @krajekis${ANSI.reset}`, screenWidth())
+    );
+
+    renderScreen(lines.join("\n") + "\n");
+}
+
+// ─── Render Weather tab ───────────────────────────────────────────────────────
+function renderWeatherTab() {
+    const lines = [renderTabBar(), ""];
+    const wEng  = weatherEngineState;
+    const bal   = wEng.virtualBalance;
+    const balC  = bal > 0 ? ANSI.green : bal < 0 ? ANSI.red : ANSI.gray;
+    const stats = wEng.stats;
+
+    lines.push(
+        section("🌡️  CLIMA — MOTOR DE TEMPERATURA"),
+        "",
+        kv("Status:", wEng.status === "RUNNING" ? `${ANSI.green}RUNNING${ANSI.reset}` : `${ANSI.red}STOPPED${ANSI.reset}`),
+        kv("Saldo virtual:", `${balC}$${bal.toFixed(2)}${ANSI.reset}`),
+        kv("Trades:", `${stats.predictions ?? 0} total`),
+        kv("Última varredura:", weatherState.lastExecution),
+        kv("Mercados monit.:", String(weatherState.marketsMonitored)),
+        kv("Sinais ativos:", String(weatherState.matchesFound?.length ?? 0)),
+        "",
+        sepLine(), "",
+        section("POSIÇÕES ABERTAS"),
+        ...(wEng.activePositions.length === 0
+            ? [`  ${ANSI.gray}Nenhuma posição aberta${ANSI.reset}`]
+            : wEng.activePositions.map(p =>
+                `  ${ANSI.green}NO${ANSI.reset} | ${p.city} | ${p.dateStr} | ` +
+                `Threshold: ${p.targetC?.toFixed(0)}°C | Entrada: ${(p.entryPrice * 100).toFixed(1)}¢ | Stake: $${p.stake}`
+            )),
+        "",
+        sepLine(), "",
+        section("SCAN LOGS (última varredura)"),
+        ...weatherState.scanLogs.slice(0, 15).map(l => `  ${ANSI.dim}${l}${ANSI.reset}`),
+        "",
+        sepLine(), "",
+        section("ENGINE LOGS"),
+        ...wEng.logs.slice(0, 8).map(l => `  ${ANSI.dim}${l}${ANSI.reset}`),
+        "",
+        centerText(`${ANSI.dim}${ANSI.gray}created by @krajekis${ANSI.reset}`, screenWidth())
+    );
+
+    renderScreen(lines.join("\n") + "\n");
+}
+
+// ─── Render Overview tab ──────────────────────────────────────────────────────
+function renderOverviewTab(btcSnap) {
+    const lines = [renderTabBar(), ""];
+    const w     = screenWidth();
+
+    // Linha de evolução ASCII do saldo BTC
+    const btcHistory = portfolio.engines?.BTC?.balanceHistory ?? [];
+    function sparkline(hist, width = 30) {
+        if (hist.length < 2) return `${ANSI.gray}${"─".repeat(width)}${ANSI.reset}`;
+        const vals  = hist.slice(-width).map(h => h.balance);
+        const min   = Math.min(...vals);
+        const max   = Math.max(...vals);
+        const range = max - min || 1;
+        const chars = ["▁","▂","▃","▄","▅","▆","▇","█"];
+        return vals.map(v => {
+            const idx = Math.min(7, Math.floor(((v - min) / range) * 8));
+            const c   = chars[idx];
+            const col = v >= 0 ? ANSI.green : ANSI.red;
+            return `${col}${c}${ANSI.reset}`;
+        }).join("");
+    }
+
+    // Tabela de engines
+    const allEngines = [
+        { key: "BTC",     eng: { state: engineState },      snap: btcSnap },
+        { key: "ETH",     eng: altEngines["ETH"],           snap: altSnapshots["ETH"] },
+        { key: "SOL",     eng: altEngines["SOL"],           snap: altSnapshots["SOL"] },
+        { key: "XRP",     eng: altEngines["XRP"],           snap: altSnapshots["XRP"] },
+        { key: "WEATHER", eng: { state: weatherEngineState }, snap: null }
+    ];
+
+    let totalBalance = 0;
+    let totalPreds   = 0;
+    let totalWins    = 0;
+
+    const tableRows = allEngines.map(({ key, eng }) => {
+        const s   = eng.state;
+        const bal = s.virtualBalance ?? 0;
+        totalBalance += bal;
+        totalPreds   += s.stats?.predictions ?? 0;
+        totalWins    += s.stats?.wins        ?? 0;
+        const wr     = (s.stats?.predictions ?? 0) > 0
+            ? `${((s.stats.wins / s.stats.predictions) * 100).toFixed(0)}%`
+            : "-";
+        const balC   = bal > 0 ? ANSI.green : bal < 0 ? ANSI.red : ANSI.gray;
+        const pos    = (s.activePositions?.length ?? 0);
+        const signal = key !== "WEATHER" && altSnapshots[key]?.action === "ENTER"
+            ? `${ANSI.green}▶ ENTER${ANSI.reset}`
+            : (key === "BTC" && btcSnap?.action === "ENTER" ? `${ANSI.green}▶ ENTER${ANSI.reset}` : `${ANSI.gray}NO TRADE${ANSI.reset}`);
+        return `  ${padLabel(key, 8)} | ${balC}$${bal.toFixed(2).padStart(8)}${ANSI.reset} | ` +
+               `${String(s.stats?.predictions ?? 0).padStart(4)} trades | WR: ${wr.padStart(5)} | ` +
+               `Pos: ${pos} | ${signal}`;
+    });
+
+    const totalWr  = totalPreds > 0 ? `${((totalWins / totalPreds) * 100).toFixed(0)}%` : "-";
+    const totC     = totalBalance > 0 ? ANSI.green : totalBalance < 0 ? ANSI.red : ANSI.gray;
+
+    // Posições abertas consolidadas
+    const allActive = [
+        ...engineState.activePositions.map(p => ({ ...p, coin: "BTC" })),
+        ...Object.entries(altEngines).flatMap(([k, e]) =>
+            e.state.activePositions.map(p => ({ ...p, coin: k }))),
+        ...weatherEngineState.activePositions.map(p => ({ ...p, coin: "WEATHER" }))
+    ];
+
+    // Últimos trades fechados (todos os engines)
+    const recentClosed = [
+        ...engineState.closedPositions.slice(-5).map(p => ({ ...p, coin: "BTC" })),
+        ...Object.entries(altEngines).flatMap(([k, e]) =>
+            e.state.closedPositions.slice(-3).map(p => ({ ...p, coin: k }))),
+        ...weatherEngineState.closedPositions.slice(-3).map(p => ({ ...p, coin: "WEATHER" }))
+    ].sort((a, b) => (b.closedAt ?? b.time ?? 0) - (a.closedAt ?? a.time ?? 0)).slice(0, 10);
+
+    lines.push(
+        section("VISÃO GERAL — PORTFÓLIO"),
+        "",
+        `  ${"Ativo".padEnd(8)} | ${"Saldo".padEnd(10)} | ${"Trades".padEnd(10)} | ${"WR".padEnd(7)} | ${"Pos".padEnd(4)} | Sinal`,
+        `  ${"─".repeat(w - 4)}`,
+        ...tableRows,
+        `  ${"─".repeat(w - 4)}`,
+        `  ${"TOTAL".padEnd(8)} | ${totC}$${totalBalance.toFixed(2).padStart(8)}${ANSI.reset} | ` +
+        `${String(totalPreds).padStart(4)} trades | WR: ${totalWr.padStart(5)}`,
+        "",
+        sepLine(), "",
+        section("EVOLUÇÃO DO SALDO (BTC)"),
+        `  ${sparkline(btcHistory, Math.min(60, w - 4))}`,
+        `  ${ANSI.gray}${btcHistory.length} snapshots salvos${ANSI.reset}`,
+        "",
+        sepLine(), "",
+        section("POSIÇÕES ABERTAS"),
+        ...(allActive.length === 0
+            ? [`  ${ANSI.gray}Nenhuma posição aberta${ANSI.reset}`]
+            : allActive.map(p =>
+                `  [${p.coin}] ${p.side ?? "NO"} | Entrada: ${((p.entryPrice ?? 0) * 100).toFixed(1)}¢ | ` +
+                `Atual: ${((p.currentPrice ?? 0) * 100).toFixed(1)}¢ | ` +
+                `Stake: $${CONFIG.stakeAmount}`
+            )),
+        "",
+        sepLine(), "",
+        section("ÚLTIMOS TRADES FECHADOS"),
+        ...(recentClosed.length === 0
+            ? [`  ${ANSI.gray}Nenhum trade fechado ainda${ANSI.reset}`]
+            : recentClosed.map(p => {
+                const pnlC = (p.pnl ?? 0) >= 0 ? ANSI.green : ANSI.red;
+                const sign = (p.pnl ?? 0) >= 0 ? "+" : "";
+                return `  [${p.coin}] ${p.side ?? "?"} | ` +
+                    `${((p.entryPrice ?? 0) * 100).toFixed(1)}¢ → ${((p.exitPrice ?? 0) * 100).toFixed(1)}¢ | ` +
+                    `${pnlC}PnL: ${sign}$${(p.pnl ?? 0).toFixed(2)}${ANSI.reset}`;
+            })),
+        "",
+        centerText(`${ANSI.dim}${ANSI.gray}created by @krajekis${ANSI.reset}`, w)
+    );
+
+    renderScreen(lines.join("\n") + "\n");
+}
+
 async function main() {
   const binanceStream = startBinanceTradeStream({ symbol: CONFIG.symbol });
   const polymarketLiveStream = startPolymarketChainlinkPriceStream({});
   const chainlinkStream = startChainlinkPriceStream({});
+
+  // Inicia o oráculo de clima de 5 em 5 minutos (Não bloqueante)
+  runWeatherConsensusSweep().then(executeWeatherSignals);
+  setInterval(() => {
+    runWeatherConsensusSweep().then(executeWeatherSignals);
+  }, 300_000);
+
+  // ─── Análise das moedas alternativas (ETH/SOL/XRP) em paralelo ──────────────
+  // Roda a cada 3 segundos (não precisa ser tick-a-tick como BTC)
+  const altWsStreams = {};
+  for (const coin of COINS.filter(c => c.key !== "BTC")) {
+      altWsStreams[coin.key] = startBinanceTradeStream({ symbol: coin.symbol });
+  }
+
+  async function runAltCoinAnalysis(coin) {
+      const wsPrice = altWsStreams[coin.key]?.getLast()?.price ?? null;
+      try {
+          const timing    = getCandleWindowTiming(CONFIG.candleWindowMinutes);
+          const [klines1m, lastPrice, poly] = await Promise.all([
+              fetchKlines({ interval: "1m", limit: 240, symbol: coin.symbol }),
+              fetchLastPrice({ symbol: coin.symbol }),
+              fetchPolymarketSnapshotForCoin(coin)
+          ]);
+
+          const settlementMs  = poly.ok && poly.market?.endDate ? new Date(poly.market.endDate).getTime() : null;
+          const timeLeftMin   = settlementMs ? (settlementMs - Date.now()) / 60_000 : timing.remainingMinutes;
+          const closes        = klines1m.map(c => c.close);
+          const vwapSeries    = computeVwapSeries(klines1m);
+          const vwapNow       = vwapSeries[vwapSeries.length - 1];
+          const lookback      = CONFIG.vwapSlopeLookbackMinutes;
+          const vwapSlope     = vwapSeries.length >= lookback ? (vwapNow - vwapSeries[vwapSeries.length - lookback]) / lookback : null;
+          const vwapDist      = vwapNow ? (lastPrice - vwapNow) / vwapNow : null;
+          const rsiNow        = computeRsi(closes, CONFIG.rsiPeriod);
+          const rsiWindow     = closes.slice(-(CONFIG.rsiPeriod + 21));
+          const rsiSeries     = [];
+          for (let i = CONFIG.rsiPeriod; i < rsiWindow.length; i++) {
+              const r = computeRsi(rsiWindow.slice(0, i + 1), CONFIG.rsiPeriod);
+              if (r !== null) rsiSeries.push(r);
+          }
+          const rsiSlope      = slopeLast(rsiSeries, 3);
+          const macd          = computeMacd(closes, CONFIG.macdFast, CONFIG.macdSlow, CONFIG.macdSignal);
+          const ha            = computeHeikenAshi(klines1m);
+          const consec        = countConsecutive(ha);
+          const failedVwap    = vwapNow !== null && vwapSeries.length >= 3
+              ? closes[closes.length - 1] < vwapNow && closes[closes.length - 2] > vwapSeries[vwapSeries.length - 2]
+              : false;
+          const vwapCrossCount = countVwapCrosses(closes, vwapSeries, 20);
+          const volumeRecent   = klines1m.slice(-20).reduce((a, c) => a + c.volume, 0);
+          const volumeAvg      = klines1m.slice(-120).reduce((a, c) => a + c.volume, 0) / 6;
+          const regimeInfo     = detectRegime({ price: lastPrice, vwap: vwapNow, vwapSlope, vwapCrossCount, volumeRecent, volumeAvg });
+          const scored         = scoreDirection({ price: lastPrice, vwap: vwapNow, vwapSlope, rsi: rsiNow, rsiSlope, macd, heikenColor: consec.color, heikenCount: consec.count, failedVwapReclaim: failedVwap });
+          const timeAware      = applyTimeAwareness(scored.rawUp, timeLeftMin, CONFIG.candleWindowMinutes);
+          const marketUp       = poly.ok ? poly.prices.up   : null;
+          const marketDown     = poly.ok ? poly.prices.down : null;
+          const edge           = computeEdge({ modelUp: timeAware.adjustedUp, modelDown: timeAware.adjustedDown, marketYes: marketUp, marketNo: marketDown });
+          const rec            = decide({ remainingMinutes: timeLeftMin, edgeUp: edge.edgeUp, edgeDown: edge.edgeDown, modelUp: timeAware.adjustedUp, modelDown: timeAware.adjustedDown });
+
+          altSnapshots[coin.key] = {
+              coinKey: coin.key, spotPrice: wsPrice ?? lastPrice, lastPrice,
+              marketFound: poly.ok, marketQuestion: poly.market?.question ?? null,
+              marketUp, marketDown, timeLeftMin, phase: rec.phase,
+              vwapNow, vwapSlope, vwapDist, rsiNow, rsiSlope, macd,
+              heikenColor: consec.color, heikenCount: consec.count,
+              regime: regimeInfo.regime, upScore: scored.upScore, downScore: scored.downScore,
+              adjustedUp: timeAware.adjustedUp, adjustedDown: timeAware.adjustedDown,
+              edgeUp: edge.edgeUp, edgeDown: edge.edgeDown,
+              bestEdge: rec.bestEdge, bestModel: rec.bestModel,
+              threshold: rec.threshold, minProb: rec.minProb,
+              action: rec.action, side: rec.side, strength: rec.strength, reason: rec.reason,
+              upTokenId: poly.ok ? poly.tokens?.upTokenId   : null,
+              downTokenId: poly.ok ? poly.tokens?.downTokenId : null,
+              error: null
+          };
+
+          // Executar sinal
+          const eng = altEngines[coin.key];
+          eng.evaluateSignals({
+              signal:     rec.action === "ENTER" ? `ENTER (${rec.side})` : "NO_TRADE",
+              marketUp, marketDown,
+              upTokenId:  altSnapshots[coin.key].upTokenId,
+              downTokenId: altSnapshots[coin.key].downTokenId,
+              phase: rec.phase, side: rec.side, reason: rec.reason,
+              timeLeftMin, bestEdge: rec.bestEdge, bestModel: rec.bestModel,
+              threshold: rec.threshold, minProb: rec.minProb,
+              upScore: scored.upScore, downScore: scored.downScore,
+              regime: regimeInfo.regime
+          });
+
+      } catch (err) {
+          altSnapshots[coin.key] = { coinKey: coin.key, error: err?.message ?? String(err), action: "NO_TRADE" };
+      }
+  }
+
+  // Rodar análises alternativas a cada 3s (não bloqueia o tick BTC)
+  setInterval(() => {
+      Promise.allSettled(COINS.filter(c => c.key !== "BTC").map(runAltCoinAnalysis));
+  }, 3_000);
 
   let prevSpotPrice = null;
   let prevCurrentPrice = null;
@@ -438,9 +841,8 @@ async function main() {
           ? Promise.resolve({ price: chainlinkWsPrice, updatedAt: chainlinkWsTick?.updatedAt ?? null, source: "chainlink_ws" })
           : fetchChainlinkBtcUsd();
 
-      const [klines1m, klines5m, lastPrice, chainlink, poly] = await Promise.all([
+      const [klines1m, lastPrice, chainlink, poly] = await Promise.all([
         fetchKlines({ interval: "1m", limit: 240 }),
-        fetchKlines({ interval: "5m", limit: 200 }),
         fetchLastPrice(),
         chainlinkPromise,
         fetchPolymarketSnapshot()
@@ -463,10 +865,13 @@ async function main() {
       const vwapDist = vwapNow ? (lastPrice - vwapNow) / vwapNow : null;
 
       const rsiNow = computeRsi(closes, CONFIG.rsiPeriod);
+      // RSI series: apenas os últimos 20 pontos — suficiente para sma(14) e slope(3)
+      // Evita O(n²): ao invés de 240 slices, usa janela fixa de ~35 closes
+      const RSI_SERIES_LOOKBACK = 20;
+      const rsiWindow = closes.slice(-(CONFIG.rsiPeriod + RSI_SERIES_LOOKBACK + 1));
       const rsiSeries = [];
-      for (let i = 0; i < closes.length; i += 1) {
-        const sub = closes.slice(0, i + 1);
-        const r = computeRsi(sub, CONFIG.rsiPeriod);
+      for (let i = CONFIG.rsiPeriod; i < rsiWindow.length; i += 1) {
+        const r = computeRsi(rsiWindow.slice(0, i + 1), CONFIG.rsiPeriod);
         if (r !== null) rsiSeries.push(r);
       }
       const rsiMa = sma(rsiSeries, CONFIG.rsiMaPeriod);
@@ -667,7 +1072,22 @@ async function main() {
               : ANSI.reset)
         : ANSI.reset;
 
-      const lines = [
+      const btcSnap = {
+          action: rec.action, side: rec.side, phase: rec.phase, strength: rec.strength,
+          spotPrice: spotPrice, adjustedUp: timeAware.adjustedUp, adjustedDown: timeAware.adjustedDown,
+          edgeUp: edge.edgeUp, edgeDown: edge.edgeDown, regime: regimeInfo.regime
+      };
+
+      // Renderizar tab ativo
+      if (activeTab === "ETH") { renderAltCoinTab("ETH", altSnapshots["ETH"], altEngines["ETH"]); }
+      else if (activeTab === "SOL") { renderAltCoinTab("SOL", altSnapshots["SOL"], altEngines["SOL"]); }
+      else if (activeTab === "XRP") { renderAltCoinTab("XRP", altSnapshots["XRP"], altEngines["XRP"]); }
+      else if (activeTab === "WEATHER") { renderWeatherTab(); }
+      else if (activeTab === "OVERVIEW") { renderOverviewTab(btcSnap); }
+      // else: renderiza BTC (código original abaixo)
+
+      const lines = activeTab !== "BTC" ? null : [
+        renderTabBar(),
         titleLine,
         marketLine,
         kv("Time left:", `${timeColor}${fmtTimeLeft(timeLeftMin)}${ANSI.reset}`),
@@ -701,7 +1121,81 @@ async function main() {
         centerText(`${ANSI.dim}${ANSI.gray}created by @krajekis${ANSI.reset}`, screenWidth())
       ].filter((x) => x !== null);
 
-      renderScreen(lines.join("\n") + "\n");
+      if (lines) renderScreen(lines.join("\n") + "\n");
+
+      evaluateSignals({
+          signal: rec.action === "ENTER" ? `ENTER (${rec.side})` : "NO_TRADE",
+          marketUp,
+          marketDown,
+          upTokenId: poly.ok ? poly.tokens?.upTokenId : null,
+          downTokenId: poly.ok ? poly.tokens?.downTokenId : null,
+          phase: rec.phase,
+          side: rec.side,
+          reason: rec.reason,
+          timeLeftMin,
+          bestEdge: rec.bestEdge,
+          bestModel: rec.bestModel,
+          threshold: rec.threshold,
+          minProb: rec.minProb,
+          upScore: scored.upScore,
+          downScore: scored.downScore,
+          regime: regimeInfo.regime
+      });
+
+      const altCoinsPayload = {};
+      for (const [key, eng] of Object.entries(altEngines)) {
+          altCoinsPayload[key] = {
+              state: {
+                  virtualBalance:  eng.state.virtualBalance,
+                  status:          eng.state.status,
+                  activePositions: eng.state.activePositions,
+                  closedPositions: eng.state.closedPositions.slice(-10),
+                  stats:           eng.state.stats,
+                  logs:            eng.state.logs.slice(0, 15)
+              },
+              snapshot: altSnapshots[key] ?? null
+          };
+      }
+
+      broadcastData({
+        timestamp: Date.now(),
+        timeLeftMin,
+        rsiNow,
+        vwapNow,
+        vwapDist,
+        modelUp: timeAware.adjustedUp,
+        modelDown: timeAware.adjustedDown,
+        marketUp,
+        marketDown,
+        signal: rec.action,
+        phase: rec.phase,
+        engine: {
+          virtualBalance:   engineState.virtualBalance,
+          status:           engineState.status,
+          openPosition:     engineState.openPosition,
+          activePositions:  engineState.activePositions,
+          closedPositions:  engineState.closedPositions.slice(-20),
+          stats:            engineState.stats,
+          logs:             engineState.logs.slice(0, 20)
+        },
+        altCoins: altCoinsPayload,
+        weather: weatherState,
+        weatherEngine: {
+          virtualBalance:  weatherEngineState.virtualBalance,
+          status:          weatherEngineState.status,
+          activePositions: weatherEngineState.activePositions,
+          closedPositions: weatherEngineState.closedPositions.slice(-20),
+          stats:           weatherEngineState.stats,
+          logs:            weatherEngineState.logs.slice(0, 20)
+        },
+        config: {
+          timeframe: CONFIG.candleWindowMinutes,
+          stopWin:   CONFIG.stopWin,
+          stopLoss:  CONFIG.stopLoss,
+          stake:     CONFIG.stakeAmount,
+          dryRun:    CONFIG.dryRun
+        }
+      });
 
       prevSpotPrice = spotPrice ?? prevSpotPrice;
       prevCurrentPrice = currentPrice ?? prevCurrentPrice;

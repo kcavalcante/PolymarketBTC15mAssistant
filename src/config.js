@@ -15,6 +15,18 @@ export const CONFIG = {
   macdSlow: 26,
   macdSignal: 9,
 
+  // Risk Management & Execution (Phase 1)
+  dryRun: (process.env.DRY_RUN || "true").toLowerCase() === "true",
+  stopWin: Number(process.env.STOP_WIN) || 50,
+  stopLoss: Number(process.env.STOP_LOSS) || 50,
+  stakeAmount: Number(process.env.STAKE_AMOUNT) || 10,
+
+  // Polymarket Real Trader Credentials Mock
+  clobApiKey: process.env.CLOB_API_KEY || "mock-api-key",
+  clobSecret: process.env.CLOB_SECRET || "mock-secret",
+  clobPassphrase: process.env.CLOB_PASSPHRASE || "mock-passphrase",
+  walletPrivateKey: process.env.WALLET_PRIVATE_KEY || "mock-private-key",
+
   polymarket: {
     marketSlug: process.env.POLYMARKET_SLUG || "",
     seriesId: process.env.POLYMARKET_SERIES_ID || "10192",

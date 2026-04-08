@@ -25,10 +25,10 @@ export function decide({ remainingMinutes, edgeUp, edgeDown, modelUp = null, mod
 
   const threshold = phase === "EARLY" ? 0.05 : phase === "MID" ? 0.1 : 0.2;
 
-  const minProb = phase === "EARLY" ? 0.55 : phase === "MID" ? 0.6 : 0.65;
+  const minProb = phase === "EARLY" ? 0.50 : phase === "MID" ? 0.52 : 0.55;
 
   if (edgeUp === null || edgeDown === null) {
-    return { action: "NO_TRADE", side: null, phase, reason: "missing_market_data" };
+    return { action: "NO_TRADE", side: null, phase, reason: "missing_market_data", threshold, minProb, bestEdge: null, bestModel: null };
   }
 
   const bestSide = edgeUp > edgeDown ? "UP" : "DOWN";
@@ -36,13 +36,13 @@ export function decide({ remainingMinutes, edgeUp, edgeDown, modelUp = null, mod
   const bestModel = bestSide === "UP" ? modelUp : modelDown;
 
   if (bestEdge < threshold) {
-    return { action: "NO_TRADE", side: null, phase, reason: `edge_below_${threshold}` };
+    return { action: "NO_TRADE", side: bestSide, phase, reason: `edge_below_${threshold}`, threshold, minProb, bestEdge, bestModel };
   }
 
   if (bestModel !== null && bestModel < minProb) {
-    return { action: "NO_TRADE", side: null, phase, reason: `prob_below_${minProb}` };
+    return { action: "NO_TRADE", side: bestSide, phase, reason: `prob_below_${minProb}`, threshold, minProb, bestEdge, bestModel };
   }
 
   const strength = bestEdge >= 0.2 ? "STRONG" : bestEdge >= 0.1 ? "GOOD" : "OPTIONAL";
-  return { action: "ENTER", side: bestSide, phase, strength, edge: bestEdge };
+  return { action: "ENTER", side: bestSide, phase, strength, edge: bestEdge, threshold, minProb, bestEdge, bestModel };
 }
