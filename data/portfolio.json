@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastSaved": "2026-04-08T20:08:53.751Z",
+  "lastSaved": "2026-04-08T20:09:08.631Z",
   "engines": {
     "BTC": {
       "virtualBalance": 87,
@@ -7645,11 +7645,11 @@
       ]
     },
     "XRP": {
-      "virtualBalance": -51,
+      "virtualBalance": -54,
       "stats": {
-        "predictions": 375,
+        "predictions": 376,
         "wins": 179,
-        "losses": 196,
+        "losses": 197,
         "biggestWin": 3
       },
       "balanceHistory": [
@@ -9152,20 +9152,13 @@
         {
           "ts": 1775678913503,
           "balance": -51
+        },
+        {
+          "ts": 1775678943094,
+          "balance": -54
         }
       ],
       "closedPositions": [
-        {
-          "coin": "XRP",
-          "side": "DOWN",
-          "entryPrice": 0.39,
-          "exitPrice": 0.33,
-          "pnl": -3,
-          "newBalance": -12,
-          "market": "XRP 15m",
-          "phase": "EARLY",
-          "savedAt": "2026-04-08T16:17:36.411Z"
-        },
         {
           "coin": "XRP",
           "side": "DOWN",
@@ -11354,6 +11347,17 @@
           "market": "XRP 15m",
           "phase": "MID",
           "savedAt": "2026-04-08T20:08:33.503Z"
+        },
+        {
+          "coin": "XRP",
+          "side": "DOWN",
+          "entryPrice": 0.14,
+          "exitPrice": 0.08,
+          "pnl": -3,
+          "newBalance": -54,
+          "market": "XRP 15m",
+          "phase": "MID",
+          "savedAt": "2026-04-08T20:09:03.094Z"
         }
       ]
     },
@@ -15099,8 +15103,8 @@
     {
       "date": "2026-04-08",
       "startBalance": 51,
-      "endBalance": -57,
-      "pnl": -108
+      "endBalance": -60,
+      "pnl": -111
     }
   ]
 }
